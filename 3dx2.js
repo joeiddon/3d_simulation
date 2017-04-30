@@ -174,7 +174,7 @@ function rotateCnvses(deg){
 
 
 function project(){
-	document.getElementById("data").innerText = parseInt(cam.x) + "," + parseInt(cam.y) + "," + parseInt(cam.z)
+	document.getElementById("data").innerText = parseInt(cam.x) + "," + parseInt(cam.y) + "," + parseInt(cam.z) + "," + parseInt(twist)
 	ctx1.setTransform(1, 0, 0, 1, 0, 0)
 	ctx2.setTransform(1, 0, 0, 1, 0, 0)
 	clearScreen()
