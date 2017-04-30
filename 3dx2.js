@@ -5,7 +5,7 @@ ctx2 = cnvs2.getContext("2d")
 
 var width, height
 cnvs1.width = cnvs2.width = width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-cnvs2.height = cnvs1.height = height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2 - 50
+cnvs2.height = cnvs1.height = height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2 - 100
 
 document.addEventListener("keydown", keyPress)
 
@@ -25,8 +25,10 @@ window.addEventListener("deviceorientation", function(event){
    
    angle /= 30
    tilt /= 30
+   twist /= 30
    
    cam.x = angle
+   cam.y = twist - 3.5
    cam.z = tilt
    
    //rotateCnvses(twist)
