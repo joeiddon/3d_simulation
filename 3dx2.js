@@ -28,7 +28,7 @@ window.addEventListener("deviceorientation", function(event){
    
    cam.x += angle
    //cam.y = tilt
-   cam.z = tilt * -1
+   cam.z += tilt * -1
    
    document.getElementById("data").innerText = parseInt(angle) + "," + parseInt(tilt) + "," + parseInt(twist)
    
@@ -53,6 +53,7 @@ colors = ["teal", "green", "green", "cyan", "cyan", "cyan", "cyan", "cyan", "cya
 coords = [{x: 3, y: 5, z: 1}, {x: 2, y: 5, z: 1}, {x: 2, y: 5, z: 0}, {x: 3, y: 5, z: 0}, {x: 3, y: 7, z: 0}, {x: 2, y: 7, z: 0},														  //dad chair
 {x: -1 , y: 2, z: 0}, {x: -1.5, y: 2, z: 0}, {x: -1.5, y: 2.5, z: 0}, {x: -1, y: 2.5, z: 0}, {x: -1 , y: 2, z: 3}, {x: -1.5, y: 2, z: 3}, {x: -1.5, y: 2.5, z: 3}, {x: -1, y: 2.5, z: 3}, //tall collumn
 {x: 0, y: 1, z: 0}, {x: 0, y: 0, z: 0}, {x: -1, y: 0, z: 0}, {x: -1, y: 1, z: 0},					//flat shape on 0,0
+{x: -3, y: -1, z: 0}, {x: -3, y: 8, z: 0}, {x: 4, y: 8, z: 0}, {x: 4, y: -1, z: 0}]					//floor
 shapeIndexs = [[18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
 cam = {x: -1, y: -3, z: 2}
 cams = [{x: -3.5, y: -3, z: 2}, {x: -3, y: -3, z: 2}, {x: -2.5, y: -3, z: 2}, {x: -2, y: -3, z: 2}, {x: -1.5, y: -3, z: 2}, {x: -1, y: -3, z: 2}, {x: -0.5, y: -3, z: 2}, {x: 0, y: -3, z: 2}]
