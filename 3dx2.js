@@ -20,11 +20,13 @@ function keyPress(event){
 	project(cam)
 }
 
+colors = ["teal", "green", "green", "cyan", "cyan", "cyan", "cyan", "cyan", "cyan", "orange"]
 
 coords = [{x: 3, y: 5, z: 1}, {x: 2, y: 5, z: 1}, {x: 2, y: 5, z: 0}, {x: 3, y: 5, z: 0}, {x: 3, y: 7, z: 0}, {x: 2, y: 7, z: 0},														  //dad chair
 {x: -1 , y: 2, z: 0}, {x: -1.5, y: 2, z: 0}, {x: -1.5, y: 2.5, z: 0}, {x: -1, y: 2.5, z: 0}, {x: -1 , y: 2, z: 3}, {x: -1.5, y: 2, z: 3}, {x: -1.5, y: 2.5, z: 3}, {x: -1, y: 2.5, z: 3}, //tall collumn
-{x: 0, y: 0, z: 1}, {x: 0, y: 3, z: 1}, {x: 0, y: 0, z: 3}, {x: 0, y: 1, z: 1.5}]					//flat shape on 0,0
-shapeIndexs = [[2,3,4,5], [0,1,2,3], [6,7,8,9], [6,9,13,10], [6,7,11,10], [7,8,12,11], [8,9,13,12],[10,11,12,13], [14,15,16,17]]
+{x: 0, y: 0, z: 0}, {x: 0, y: -1, z: 0}, {x: -1, y: -1, z: 0}, {x: -1, y: 0, z: 0},					//flat shape on 0,0
+{x: -3, y: -1, z: 0}, {x: -3, y: 3, z: 0}, {x: 3, y: 3, z: 0}, {x: 3, y: -1, z: 0}]					//floor
+shapeIndexs = [[18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [6,9,13,10], [6,7,11,10], [7,8,12,11], [8,9,13,12],[10,11,12,13], [14,15,16,17]]
 cam = {x: -1, y: -3, z: 2}
 cams = [{x: -3.5, y: -3, z: 2}, {x: -3, y: -3, z: 2}, {x: -2.5, y: -3, z: 2}, {x: -2, y: -3, z: 2}, {x: -1.5, y: -3, z: 2}, {x: -1, y: -3, z: 2}, {x: -0.5, y: -3, z: 2}, {x: 0, y: -3, z: 2}]
 
@@ -109,7 +111,7 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 		ctx1.lineTo(points[shape[0]].y, width - points[shape[0]].x)
 		ctx1.stroke()
 		ctx1.closePath()
-		ctx1.fillStyle = "teal"
+		ctx1.fillStyle = colors[s]
 		ctx1.fill()
 	}
 	}
@@ -127,7 +129,7 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 		ctx2.lineTo(points[shape[0]].y, width - points[shape[0]].x)
 		ctx2.stroke()
 		ctx2.closePath()
-		ctx2.fillStyle = "teal"
+		ctx2.fillStyle = colors[s]
 		ctx2.fill()
 	}
 	}
