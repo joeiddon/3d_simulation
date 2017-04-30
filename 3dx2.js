@@ -22,13 +22,16 @@ window.addEventListener("deviceorientation", function(event){
   
    angle = (angle - 180) * -1
    
-   twist /= 100
-   angle /= 100
-   tilt /= 100
+   twist /= 10
+   angle /= 10
+   tilt /= 10
    
    cam.x = angle
    cam.y = tilt
    cam.z = twist
+   
+   document.getElementById("data").value = parseInt(tilt) + "," + parseInt(angle) + "," + parseInt(twist)
+   
    
 }, true);
 
