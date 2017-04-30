@@ -5,7 +5,7 @@ ctx2 = cnvs2.getContext("2d")
 
 var width, height
 cnvs1.width = cnvs2.width = width =  900 //Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-cnvs2.height = cnvs1.height = height = 610 //Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2 - 100
+cnvs2.height = cnvs1.height = height = 720 //Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2 - 100
 
 document.addEventListener("keydown", keyPress)
 
