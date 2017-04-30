@@ -27,8 +27,8 @@ window.addEventListener("deviceorientation", function(event){
    tilt /= 30
    
    cam.x = angle
-   cam.y = tilt
-   //cam.z = twist
+   //cam.y = tilt
+   cam.z = tilt
    
    document.getElementById("data").innerText = parseInt(angle) + "," + parseInt(tilt) + "," + parseInt(twist)
    
