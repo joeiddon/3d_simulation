@@ -58,7 +58,7 @@ shapeIndexs = [[18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8
 cam = {x: -1, y: -3, z: 2}
 cams = [{x: -3.5, y: -3, z: 2}, {x: -3, y: -3, z: 2}, {x: -2.5, y: -3, z: 2}, {x: -2, y: -3, z: 2}, {x: -1.5, y: -3, z: 2}, {x: -1, y: -3, z: 2}, {x: -0.5, y: -3, z: 2}, {x: 0, y: -3, z: 2}]
 
-var pixAngleRatio = 10		//the amount of pixels that one degree spreads over
+var pixAngleRatio = 18		//the amount of pixels that one degree spreads over
 var eyeDif = 0.28
 var side = "left"
 
