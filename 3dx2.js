@@ -25,6 +25,8 @@ coords = [{x: 3, y: 5, z: 1}, {x: 2, y: 5, z: 1}, {x: 2, y: 5, z: 0}, {x: 3, y: 
 {x: -1 , y: 2, z: 0}, {x: -1.5, y: 2, z: 0}, {x: -1.5, y: 2.5, z: 0}, {x: -1, y: 2.5, z: 0}, {x: -1 , y: 2, z: 3}, {x: -1.5, y: 2, z: 3}, {x: -1.5, y: 2.5, z: 3}, {x: -1, y: 2.5, z: 3}] //tall collumn
 shapeIndexs = [[2,3,4,5], [0,1,2,3], [6,7,8,9], [6,9,13,10], [6,7,11,10], [7,8,12,11], [8,9,13,12],[10,11,12,13]]
 cam = {x: -1, y: -3, z: 2}
+cams = [{x: -3.5, y: -3, z: 2}, {x: -3, y: -3, z: 2}, {x: -2.5, y: -3, z: 2}, {x: -2, y: -3, z: 2}, {x: -1.5, y: -3, z: 2}, {x: -1, y: -3, z: 2}, {x: -0.5, y: -3, z: 2}, {x: 0, y: -3, z: 2}]
+
 var pixAngleRatio = 10		//the amount of pixels that one degree spreads over
 var eyeDif = 0.28
 var side = "left"
@@ -94,7 +96,6 @@ function drawAngles(angles){		//draws a set of 3d coordinates from their vertica
 function drawPoints(points){	//acctually does the drawing of the coordinates from the canvas coordinates fills in with reference to the shape index array
 	if (side == "left"){
 	for (s = 0; s < shapeIndexs.length; s++){
-		console.log("drawing left canvas")
 		shape = shapeIndexs[s]
 		ctx1.strokeStyle = "black"
 		ctx1.beginPath(points[shape[0]].y, width - points[shape[0]].x)
@@ -113,7 +114,6 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 	}
 	else {
 	for (s = 0; s < shapeIndexs.length; s++){
-		console.log("right canvas")
 		shape = shapeIndexs[s]
 		ctx2.strokeStyle = "black"
 		ctx2.beginPath(points[shape[0]].y, width - points[shape[0]].x)
@@ -132,7 +132,10 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 	}
 }
 
-function project(cam){
+function project(){
+	cam = cams[cur]
+	cur++
+	if ( cur > 8 ) cur = 0
 	clearScreen()
 	drawAxis()
 	side = "left"
@@ -140,7 +143,8 @@ function project(cam){
 	side = "right"
 	drawWorld({x: cam.x + eyeDif, y: cam.y, z: cam.z})
 }
-project(cam)
+cur = 0
 
-//setInterval(project, 1500)
+project()
+setInterval(project, 200)
 
