@@ -166,7 +166,6 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 
 function project(){
 	document.getElementById("data").innerText = parseInt(cam.x) + "," + parseInt(cam.y) + "," + parseInt(cam.z)
- 0, 0)
 	clearScreen()
 	
 
@@ -194,5 +193,5 @@ function rotateCnvses(deg){
 	ctx2.translate(-1 * width / 2, - 1 * height / 2)
 //put these in project...
 	ctx1.setTransform(1, 0, 0, 1, 0, 0)
-	ctx2.setTransform(1, 0, 0, 1,
+	ctx2.setTransform(1, 0, 0, 1, 0, 0)
 }
