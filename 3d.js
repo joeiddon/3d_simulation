@@ -5,12 +5,12 @@ document.addEventListener("keydown", keyPress)
 
 function keyPress(event){
 	key = event.keyCode
-	if (key == 81) cam.z += 0.2	//q
-	if (key == 69) cam.z -= 0.2	//e
-	if (key == 87) cam.y += 0.2	//w
-	if (key == 83) cam.y -= 0.2	//s
-	if (key == 65) cam.x += 0.2	//a
-	if (key == 68) cam.x -= 0.2	//d
+	if (key == 81) cam.z += 0.5	//q
+	if (key == 69) cam.z -= 0.5	//e
+	if (key == 87) cam.y += 0.5	//w
+	if (key == 83) cam.y -= 0.5	//s
+	if (key == 65) cam.x -= 0.5	//a
+	if (key == 68) cam.x += 0.5	//d
 	project(cam)
 }
 
@@ -19,10 +19,14 @@ var width, height
 cnvs.width = width = 720
 cnvs.height = height = 480
 
+colors = ["teal", "green", "green", "cyan", "cyan", "cyan", "cyan", "cyan", "cyan", "orange"]
+
 coords = [{x: 3, y: 5, z: 1}, {x: 2, y: 5, z: 1}, {x: 2, y: 5, z: 0}, {x: 3, y: 5, z: 0}, {x: 3, y: 7, z: 0}, {x: 2, y: 7, z: 0},														  //dad chair
-{x: -1 , y: 2, z: 0}, {x: -1.5, y: 2, z: 0}, {x: -1.5, y: 2.5, z: 0}, {x: -1, y: 2.5, z: 0}, {x: -1 , y: 2, z: 3}, {x: -1.5, y: 2, z: 3}, {x: -1.5, y: 2.5, z: 3}, {x: -1, y: 2.5, z: 3}] //tall collumn
-shapeIndexs = [[2,3,4,5], [0,1,2,3], [6,7,8,9], [6,9,13,10], [6,7,11,10], [7,8,12,11], [8,9,13,12],[10,11,12,13]]
-cam = {x: 0, y: 0, z: 2}
+{x: -1 , y: 2, z: 0}, {x: -1.5, y: 2, z: 0}, {x: -1.5, y: 2.5, z: 0}, {x: -1, y: 2.5, z: 0}, {x: -1 , y: 2, z: 3}, {x: -1.5, y: 2, z: 3}, {x: -1.5, y: 2.5, z: 3}, {x: -1, y: 2.5, z: 3}, //tall collumn
+{x: 0, y: 1, z: 0}, {x: 0, y: 0, z: 0}, {x: -1, y: 0, z: 0}, {x: -1, y: 1, z: 0},					//flat shape on 0,0
+{x: -3, y: -1, z: 0}, {x: -3, y: 8, z: 0}, {x: 4, y: 8, z: 0}, {x: 4, y: -1, z: 0}]					//floor
+shapeIndexs = [[18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
+cam = {x: 0, y: -8, z: 3}
 var pixAngleRatio = 10		//the amount of pixels that one degree spreads over
 
 
@@ -44,7 +48,7 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 		ctx.lineTo(points[shape[0]].x, points[shape[0]].y)
 		ctx.stroke()
 		ctx.closePath()
-		ctx.fillStyle = "teal"
+		ctx.fillStyle = colors[s]
 		ctx.fill()
 	}
 }
@@ -104,6 +108,8 @@ function drawWorld(camera){		//draws the 3d objects from their coordinates and c
 }
 
 function project(camera){			 //draws the world from given camera perspective and object coodinates
+	document.getElementById("data").innerText = parseInt(cam.x) + "," + parseInt(cam.y) + "," + parseInt(cam.z)
+
 	clearScreen()
 	
 	drawWorld(camera)	
@@ -111,7 +117,7 @@ function project(camera){			 //draws the world from given camera perspective and
 	drawAxis()
 }
 
-project({x: 0, y: 0, z: 2})
+project(cam)
 
 
 //setInterval(project, 1500)
