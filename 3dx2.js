@@ -25,11 +25,11 @@ window.addEventListener("deviceorientation", function(event){
    
    angle /= 30
    tilt /= 30
-   twist /= 10
-   twist = twist * -1 - 3
+   twist /= 30
+   twist *= -1
    
    cam.x = angle
-   cam.y = twist
+   //cam.y = twist
    cam.z = tilt
    
    //rotateCnvses(twist)
