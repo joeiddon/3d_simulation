@@ -9,6 +9,31 @@ cnvs2.height = cnvs1.height = height = 480
 
 document.addEventListener("keydown", keyPress)
 
+twist = 0
+angle = 0
+tilt = 0
+
+window.addEventListener("deviceorientation", function(event){
+   tilt = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma
+   twist = event.beta
+   angle = event.alpha
+   if (tilt < 0) angle = (angle + 180) % 360;
+   if (tilt > 0) twist = (twist / Math.abs(twist)) * (180 - Math.abs(twist))
+  
+   angle = (angle - 180) * -1
+   
+   twist /= 10
+   angle /= 10
+   tilt /= 10
+   
+   cam.x = angle
+   cam.y = tilt
+   cam.z = twist
+   
+}, true);
+
+
+
 function keyPress(event){
 	key = event.keyCode
 	if (key == 81) cam.z += 0.2	//q
@@ -136,9 +161,6 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 }
 
 function project(){
-	cam = cams[cur]
-	cur++
-	if ( cur > 7 ) cur = 0
 	clearScreen()
 	drawAxis()
 	side = "left"
@@ -148,6 +170,6 @@ function project(){
 }
 cur = 0
 
-project()
-setInterval(project, 200)
+
+setInterval(project, 10)
 
