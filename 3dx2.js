@@ -14,6 +14,7 @@ angle = 0
 tilt = 0
 
 window.addEventListener("deviceorientation", function(event){
+   //rotateCnvses(-1 * twist)
    tilt = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma
    twist = event.beta
    angle = event.alpha
@@ -27,10 +28,9 @@ window.addEventListener("deviceorientation", function(event){
    tilt /=  180
    
    cam.x += angle
-   //cam.y = tilt
    cam.z += tilt * -1
    
-   document.getElementById("data").innerText = parseInt(angle) + "," + parseInt(tilt) + "," + parseInt(twist)
+   //rotateCnvses(twist)
    
    
 }, true);
@@ -163,9 +163,24 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 	}
 }
 
+function rotateCnvses(deg){
+	ctx1.translate(width / 2, height / 2)
+	ctx1.rotate(deg * Math.PI / 180)
+	ctx1.translate(-1 * width / 2, - 1 * height / 2)
+	ctx2.translate(width / 2, height / 2)
+	ctx2.rotate(deg * Math.PI / 180)
+	ctx2.translate(-1 * width / 2, - 1 * height / 2)
+}
+
+
 function project(){
+	document.getElementById("data").innerText = parseInt(cam.x) + "," + parseInt(cam.y) + "," + parseInt(cam.z)
+	ctx1.setTransform(1, 0, 0, 1, 0, 0)
+	ctx2.setTransform(1, 0, 0, 1, 0, 0)
 	clearScreen()
+	
 	drawAxis()
+	rotateCnvses(twist)
 	side = "left"
 	drawWorld({x: cam.x - eyeDif, y: cam.y, z: cam.z})
 	side = "right"
