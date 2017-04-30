@@ -129,14 +129,14 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 	for (s = 0; s < shapeIndexs.length; s++){
 		shape = shapeIndexs[s]
 		ctx1.strokeStyle = "black"
-		ctx1.beginPath(points[shape[0]].y, width - points[shape[0]].x)
-		ctx1.lineTo(points[shape[1]].y, width - points[shape[1]].x)
+		ctx1.beginPath(points[shape[0]].y, height - points[shape[0]].x)
+		ctx1.lineTo(points[shape[1]].y, height - points[shape[1]].x)
 		ctx1.stroke()
-		ctx1.lineTo(points[shape[2]].y, width - points[shape[2]].x)
+		ctx1.lineTo(points[shape[2]].y, height - points[shape[2]].x)
 		ctx1.stroke()
-		ctx1.lineTo(points[shape[3]].y, width - points[shape[3]].x)
+		ctx1.lineTo(points[shape[3]].y, height - points[shape[3]].x)
 		ctx1.stroke()
-		ctx1.lineTo(points[shape[0]].y, width - points[shape[0]].x)
+		ctx1.lineTo(points[shape[0]].y, height - points[shape[0]].x)
 		ctx1.stroke()
 		ctx1.closePath()
 		ctx1.fillStyle = colors[s]
@@ -147,14 +147,14 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 	for (s = 0; s < shapeIndexs.length; s++){
 		shape = shapeIndexs[s]
 		ctx2.strokeStyle = "black"
-		ctx2.beginPath(points[shape[0]].y, width - points[shape[0]].x)
-		ctx2.lineTo(points[shape[1]].y, width - points[shape[1]].x)
+		ctx2.beginPath(points[shape[0]].y, height - points[shape[0]].x)
+		ctx2.lineTo(points[shape[1]].y, height - points[shape[1]].x)
 		ctx2.stroke()
-		ctx2.lineTo(points[shape[2]].y, width - points[shape[2]].x)
+		ctx2.lineTo(points[shape[2]].y, height - points[shape[2]].x)
 		ctx2.stroke()
-		ctx2.lineTo(points[shape[3]].y, width - points[shape[3]].x)
+		ctx2.lineTo(points[shape[3]].y, height - points[shape[3]].x)
 		ctx2.stroke()
-		ctx2.lineTo(points[shape[0]].y, width - points[shape[0]].x)
+		ctx2.lineTo(points[shape[0]].y, height - points[shape[0]].x)
 		ctx2.stroke()
 		ctx2.closePath()
 		ctx2.fillStyle = colors[s]
