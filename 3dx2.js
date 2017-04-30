@@ -167,11 +167,13 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 function project(){
 	document.getElementById("data").innerText = parseInt(cam.x) + "," + parseInt(cam.y) + "," + parseInt(cam.z)
 	clearScreen()
-	drawAxis()
+	
 	side = "left"
 	drawWorld({x: cam.x - eyeDif, y: cam.y, z: cam.z})
 	side = "right"
 	drawWorld({x: cam.x + eyeDif, y: cam.y, z: cam.z})
+
+	drawAxis()
 }
 cur = 0
 
