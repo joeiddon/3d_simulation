@@ -5,14 +5,16 @@ document.addEventListener("keydown", keyPress)
 
 function keyPress(event){
 	key = event.keyCode
-	if (key == 88) cam.z += 0.5	//x
-	if (key == 90) cam.z -= 0.5	//z
+	if (key == 88) cam.z -= 0.5	//x
+	if (key == 90) cam.z += 0.5	//z
 	if (key == 87) cam.y += 0.5	//w
 	if (key == 83) cam.y -= 0.5	//s
 	if (key == 65) cam.x -= 0.5	//a
 	if (key == 68) cam.x += 0.5	//d
-	if (key == 69) rotateCoords(-3)	//e
-	if (key == 81) rotateCoords(3) //q
+	if (key == 69) rotateCoordRoundZ(-3)	//e
+	if (key == 81) rotateCoordRoundZ(3) //q
+	if (key == 82) rotateCoordRoundX(3)	//r
+	if (key == 70) rotateCoordRoundX(-3) //f
 	
 	project(cam)
 }
@@ -116,7 +118,22 @@ function drawWorld(camera){		//draws the 3d objects from their coordinates and c
 	drawAngles(angles)
 }
 
-function rotateCoords(deg){
+function rotateCoordRoundX(deg){
+	deg = radFromDeg(deg)
+	for (c = 0; c < coords.length; c++){		
+		coord = coords[c]
+		coord.y -= cam.y
+		coord.z -= cam.z
+		yCo = coord.y						//translate each point as if cam was at the origin
+		zCo = coord.z
+		coord.y = yCo * Math.cos(deg) + zCo * Math.sin(deg)			//rotate around origin for that point
+		coord.z = yCo * -1 * Math.sin(deg) + zCo * Math.cos(deg)
+		coord.y += cam.y					//translate each point back
+		coord.z += cam.z
+	}	
+}
+
+function rotateCoordRoundZ(deg){
 	deg = radFromDeg(deg)
 	for (c = 0; c < coords.length; c++){		
 		coord = coords[c]
@@ -130,6 +147,7 @@ function rotateCoords(deg){
 		coord.y += cam.y
 	}	
 }
+
 
 function project(camera){			 //draws the world from given camera perspective and object coodinates
 	document.getElementById("data").innerText = parseInt(cam.x) + "," + parseInt(cam.y) + "," + parseInt(cam.z)
