@@ -4,8 +4,13 @@ cnvs2 = document.getElementById("cnvs2")
 ctx2 = cnvs2.getContext("2d")
 
 var width, height
-cnvs1.width = cnvs2.width = width =  900 //Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-cnvs2.height = cnvs1.height = height = 720 //Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2 - 100
+window.addEventListener("resize", resize, true)
+
+function resize(){
+	cnvs1.width = cnvs2.width = width =  900 //Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+	cnvs2.height = cnvs1.height = height = 720 //Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2 - 100
+}
+resize()
 
 document.addEventListener("keydown", keyPress)
 
@@ -48,15 +53,17 @@ function keyPress(event){
 	project(cam)
 }
 
-colors = ["teal", "green", "green", "cyan", "cyan", "cyan", "cyan", "cyan", "cyan", "orange"]
+colors = ["#F19292", "yellow", "teal", "green", "green", "cyan", "cyan", "cyan", "cyan", "cyan", "cyan", "orange"]
 
-coords = [{x: 3, y: 5, z: 1}, {x: 2, y: 5, z: 1}, {x: 2, y: 5, z: 0}, {x: 3, y: 5, z: 0}, {x: 3, y: 7, z: 0}, {x: 2, y: 7, z: 0},														  //dad chair
-{x: -1 , y: 2, z: 0}, {x: -1.5, y: 2, z: 0}, {x: -1.5, y: 2.5, z: 0}, {x: -1, y: 2.5, z: 0}, {x: -1 , y: 2, z: 3}, {x: -1.5, y: 2, z: 3}, {x: -1.5, y: 2.5, z: 3}, {x: -1, y: 2.5, z: 3}, //tall collumn
-{x: 0, y: 1, z: 0}, {x: 0, y: 0, z: 0}, {x: -1, y: 0, z: 0}, {x: -1, y: 1, z: 0},					//flat shape on 0,0
-{x: -3, y: -1, z: 0}, {x: -3, y: 8, z: 0}, {x: 4, y: 8, z: 0}, {x: 4, y: -1, z: 0}]					//floor
-shapeIndexs = [[18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
-cam = {x: -1, y: -8, z: 2}
-cams = [{x: -3.5, y: -3, z: 2}, {x: -3, y: -3, z: 2}, {x: -2.5, y: -3, z: 2}, {x: -2, y: -3, z: 2}, {x: -1.5, y: -3, z: 2}, {x: -1, y: -3, z: 2}, {x: -0.5, y: -3, z: 2}, {x: 0, y: -3, z: 2}]
+coords = [{x: 3, y: 20, z: 1}, {x: 2, y: 20, z: 1}, {x: 2, y: 20, z: 0}, {x: 3, y: 20, z: 0}, {x: 3, y: 22, z: 0}, {x: 2, y: 22, z: 0},														  //dad chair
+{x: -1 , y: 17, z: 0}, {x: -1.5, y: 17, z: 0}, {x: -1.5, y: 17.5, z: 0}, {x: -1, y: 17.5, z: 0}, {x: -1 , y: 17, z: 3}, {x: -1.5, y: 17, z: 3}, {x: -1.5, y: 17.5, z: 3}, {x: -1, y: 17.5, z: 3}, //tall collumn
+{x: 0, y: 16, z: 0}, {x: 0, y: 15, z: 0}, {x: -1, y: 15, z: 0}, {x: -1, y: 16, z: 0},					//flat shape on 0,0
+{x: -4, y: 14, z: 0}, {x: -4, y: 23, z: 0}, {x: 4, y: 23, z: 0}, {x: 4, y: 14, z: 0},					//floor
+{x: -4, y: 23, z: 0}, {x: 4, y: 23, z: 0}, {x: 4, y: 23, z: 2.5}, {x: -4, y: 23, z: 2.5},					//back wall
+{x: -1, y: 23, z: 1.8}, {x: 1, y: 23, z: 1.8}, {x: 0, y: 23, z: 0.3}]									//triangle on back wall
+
+shapeIndexs = [[22,23,24,25], [26,27,28], [18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
+cam = {x: 0, y: 0, z: 3}
 
 var pixAngleRatio = 18		//the amount of pixels that one degree spreads over
 var eyeDif = 0.28
@@ -130,12 +137,10 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 		shape = shapeIndexs[s]
 		ctx1.strokeStyle = "black"
 		ctx1.beginPath(points[shape[0]].y, height - points[shape[0]].x)
-		ctx1.lineTo(points[shape[1]].y, height - points[shape[1]].x)
-		ctx1.stroke()
-		ctx1.lineTo(points[shape[2]].y, height - points[shape[2]].x)
-		ctx1.stroke()
-		ctx1.lineTo(points[shape[3]].y, height - points[shape[3]].x)
-		ctx1.stroke()
+		for (p = 1; p < shape.length; p++){
+			ctx1.lineTo(points[shape[p]].y, height - points[shape[p]].x)
+			ctx1.stroke()
+		}
 		ctx1.lineTo(points[shape[0]].y, height - points[shape[0]].x)
 		ctx1.stroke()
 		ctx1.closePath()
@@ -148,12 +153,10 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 		shape = shapeIndexs[s]
 		ctx2.strokeStyle = "black"
 		ctx2.beginPath(points[shape[0]].y, height - points[shape[0]].x)
-		ctx2.lineTo(points[shape[1]].y, height - points[shape[1]].x)
-		ctx2.stroke()
-		ctx2.lineTo(points[shape[2]].y, height - points[shape[2]].x)
-		ctx2.stroke()
-		ctx2.lineTo(points[shape[3]].y, height - points[shape[3]].x)
-		ctx2.stroke()
+		for (p = 1; p < shape.length; p++){
+			ctx2.lineTo(points[shape[p]].y, height - points[shape[p]].x)
+			ctx2.stroke()
+		}
 		ctx2.lineTo(points[shape[0]].y, height - points[shape[0]].x)
 		ctx2.stroke()
 		ctx2.closePath()
