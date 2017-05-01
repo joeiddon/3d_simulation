@@ -28,9 +28,9 @@ window.addEventListener("deviceorientation", function(event){
   
    angle = (angle - 180) * -1
    
-   angle /= 30
-   tilt /= 30
-   twist /= 30
+   angle /= 10
+   tilt /= 10
+   twist /= 10
    
    cam.x = angle
    cam.z = tilt
