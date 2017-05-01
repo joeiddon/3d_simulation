@@ -5,12 +5,15 @@ document.addEventListener("keydown", keyPress)
 
 function keyPress(event){
 	key = event.keyCode
-	if (key == 81) cam.z += 0.5	//q
-	if (key == 69) cam.z -= 0.5	//e
+	if (key == 88) cam.z += 0.5	//x
+	if (key == 90) cam.z -= 0.5	//z
 	if (key == 87) cam.y += 0.5	//w
 	if (key == 83) cam.y -= 0.5	//s
 	if (key == 65) cam.x -= 0.5	//a
 	if (key == 68) cam.x += 0.5	//d
+	if (key == 69) rotateCoords(-3)	//e
+	if (key == 81) rotateCoords(3) //q
+	
 	project(cam)
 }
 
@@ -29,7 +32,7 @@ coords = [{x: 3, y: 20, z: 1}, {x: 2, y: 20, z: 1}, {x: 2, y: 20, z: 0}, {x: 3, 
 {x: -1, y: 23, z: 1.8}, {x: 1, y: 23, z: 1.8}, {x: 0, y: 23, z: 0.3}]									//triangle on back wall
 
 shapeIndexs = [[22,23,24,25], [26,27,28], [18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
-cam = {x: 0, y: 0, z: 3}
+cam = {x: 0, y: 0, z: 3, r: 0}
 var pixAngleRatio = 18		//the amount of pixels that one degree spreads over
 
 
@@ -65,6 +68,10 @@ function drawAngles(angles){		//draws a set of 3d coordinates from their vertica
 
 function degFromRad(rad){			//returns degree angle from radian angle
 	return rad * (180 / Math.PI)
+}
+
+function radFromDeg(deg){
+	return deg * ( Math.PI / 180)
 }
 
 function clearScreen(){				//returns canvas to balank screen
@@ -107,6 +114,21 @@ function drawWorld(camera){		//draws the 3d objects from their coordinates and c
 		angles.push({h : horizontalAngle, v : verticalAngle})
 	}
 	drawAngles(angles)
+}
+
+function rotateCoords(deg){
+	deg = radFromDeg(deg)
+	for (c = 0; c < coords.length; c++){		
+		coord = coords[c]
+		coord.x -= cam.x
+		coord.y -= cam.y
+		xCo = coord.x						//translate each point as if cam was at the origin
+		yCo = coord.y
+		coord.x = xCo * Math.cos(deg) + yCo * Math.sin(deg)			//rotate around origin for that point
+		coord.y = xCo * -1 * Math.sin(deg) + yCo * Math.cos(deg)
+		coord.x += cam.x					//translate each point back
+		coord.y += cam.y
+	}	
 }
 
 function project(camera){			 //draws the world from given camera perspective and object coodinates
