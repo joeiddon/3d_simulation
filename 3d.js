@@ -27,7 +27,7 @@ coords = [{x: 3, y: 5, z: 1}, {x: 2, y: 5, z: 1}, {x: 2, y: 5, z: 0}, {x: 3, y: 
 {x: -3, y: -1, z: 0}, {x: -3, y: 8, z: 0}, {x: 4, y: 8, z: 0}, {x: 4, y: -1, z: 0}]					//floor
 shapeIndexs = [[18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
 cam = {x: 0, y: -8, z: 3}
-var pixAngleRatio = 10		//the amount of pixels that one degree spreads over
+var pixAngleRatio = 18		//the amount of pixels that one degree spreads over
 
 
 function drawPoint(horizontalAngle, verticalAngle){		//draws a single point from its angles from the center line( y axis )
