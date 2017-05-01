@@ -19,14 +19,17 @@ var width, height
 cnvs.width = width = 720
 cnvs.height = height = 480
 
-colors = ["teal", "green", "green", "cyan", "cyan", "cyan", "cyan", "cyan", "cyan", "orange"]
+colors = ["#F19292", "yellow", "teal", "green", "green", "cyan", "cyan", "cyan", "cyan", "cyan", "cyan", "orange"]
 
-coords = [{x: 3, y: 5, z: 1}, {x: 2, y: 5, z: 1}, {x: 2, y: 5, z: 0}, {x: 3, y: 5, z: 0}, {x: 3, y: 7, z: 0}, {x: 2, y: 7, z: 0},														  //dad chair
-{x: -1 , y: 2, z: 0}, {x: -1.5, y: 2, z: 0}, {x: -1.5, y: 2.5, z: 0}, {x: -1, y: 2.5, z: 0}, {x: -1 , y: 2, z: 3}, {x: -1.5, y: 2, z: 3}, {x: -1.5, y: 2.5, z: 3}, {x: -1, y: 2.5, z: 3}, //tall collumn
-{x: 0, y: 1, z: 0}, {x: 0, y: 0, z: 0}, {x: -1, y: 0, z: 0}, {x: -1, y: 1, z: 0},					//flat shape on 0,0
-{x: -3, y: -1, z: 0}, {x: -3, y: 8, z: 0}, {x: 4, y: 8, z: 0}, {x: 4, y: -1, z: 0}]					//floor
-shapeIndexs = [[18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
-cam = {x: 0, y: -8, z: 3}
+coords = [{x: 3, y: 20, z: 1}, {x: 2, y: 20, z: 1}, {x: 2, y: 20, z: 0}, {x: 3, y: 20, z: 0}, {x: 3, y: 22, z: 0}, {x: 2, y: 22, z: 0},														  //dad chair
+{x: -1 , y: 17, z: 0}, {x: -1.5, y: 17, z: 0}, {x: -1.5, y: 17.5, z: 0}, {x: -1, y: 17.5, z: 0}, {x: -1 , y: 17, z: 3}, {x: -1.5, y: 17, z: 3}, {x: -1.5, y: 17.5, z: 3}, {x: -1, y: 17.5, z: 3}, //tall collumn
+{x: 0, y: 16, z: 0}, {x: 0, y: 15, z: 0}, {x: -1, y: 15, z: 0}, {x: -1, y: 16, z: 0},					//flat shape on 0,0
+{x: -4, y: 14, z: 0}, {x: -4, y: 23, z: 0}, {x: 4, y: 23, z: 0}, {x: 4, y: 14, z: 0},					//floor
+{x: -4, y: 23, z: 0}, {x: 4, y: 23, z: 0}, {x: 4, y: 23, z: 2.5}, {x: -4, y: 23, z: 2.5},					//back wall
+{x: -1, y: 23, z: 1.8}, {x: 1, y: 23, z: 1.8}, {x: 0, y: 23, z: 0.3}]									//triangle on back wall
+
+shapeIndexs = [[22,23,24,25], [26,27,28], [18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
+cam = {x: 0, y: 0, z: 3}
 var pixAngleRatio = 18		//the amount of pixels that one degree spreads over
 
 
@@ -39,12 +42,10 @@ function drawPoints(points){	//acctually does the drawing of the coordinates fro
 		shape = shapeIndexs[s]
 		ctx.strokeStyle = "black"
 		ctx.beginPath(points[shape[0]].x, points[shape[0]].y)
-		ctx.lineTo(points[shape[1]].x, points[shape[1]].y)
-		ctx.stroke()
-		ctx.lineTo(points[shape[2]].x, points[shape[2]].y)
-		ctx.stroke()
-		ctx.lineTo(points[shape[3]].x, points[shape[3]].y)
-		ctx.stroke()
+		for (p = 1; p < shape.length; p++){
+			ctx.lineTo(points[shape[p]].x, points[shape[p]].y)
+			ctx.stroke()
+		}
 		ctx.lineTo(points[shape[0]].x, points[shape[0]].y)
 		ctx.stroke()
 		ctx.closePath()
@@ -96,12 +97,13 @@ function drawAxis(){			//draws the two axis and center crosshar
 function drawWorld(camera){		//draws the 3d objects from their coordinates and camera position onto canvas in 2d
 	angles = []
 	for (c = 0; c < coords.length; c++){
-		coord = coords[c]		
-		horizontalAngle = degFromRad(Math.atan((coord.x - camera.x) / Math.sqrt((coord.x - camera.x) * (coord.x - camera.x) + (coord.y - camera.y) * (coord.y - camera.y) )))
-		verticalAngle = degFromRad(Math.atan((coord.z - camera.z) / (coord.y - camera.y)))
+		coord = coords[c]
+		var coordY = coord.y
+		if (coordY < cam.y) coordY = cam.y
+		horizontalAngle = degFromRad(Math.atan((coord.x - camera.x) / Math.sqrt((coord.x - camera.x) * (coord.x - camera.x) + (coordY - camera.y) * (coordY	 - camera.y) )))
+		verticalAngle = degFromRad(Math.atan((coord.z - camera.z) / (coordY - camera.y)))
 		//drawPoint(horizontalAngle, verticalAngle)
-		//console.log(horizontalAngle)
-		//console.log(verticalAngle)
+		//console.log(c, horizontalAngle, verticalAngle)
 		angles.push({h : horizontalAngle, v : verticalAngle})
 	}
 	drawAngles(angles)
