@@ -18,6 +18,7 @@ window.addEventListener("deviceorientation", function(event){
    
 }, true);
 
+cam.yaw = 2
 
 document.addEventListener("keydown", keyPress)
 
