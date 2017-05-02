@@ -12,7 +12,7 @@ function phoneOrientation(event){
    var yaw = event.alpha
    if (pitch < 0) yaw = (yaw + 180) % 360;
   
-   yaw = (yaw - 180)
+   //yaw = (yaw - 180) * -1
    
    //angle /= 10
    //tilt /= 10
