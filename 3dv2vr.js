@@ -2,7 +2,6 @@ dcnvs = document.getElementById("cnvs")
 ctx = cnvs.getContext("2d")
 
 
-
 window.addEventListener("deviceorientation", phoneOrientation, true); 
 
 cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
@@ -20,7 +19,7 @@ function phoneOrientation(event){
    roll /= 10
    
    cam.yaw = yaw
-   cam.pitch = roll
+   cam.pitch = pitch
 }
 
 cam.yaw = 2
