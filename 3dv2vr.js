@@ -7,19 +7,19 @@ window.addEventListener("deviceorientation", phoneOrientation, true);
 cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
 
 function phoneOrientation(event){
-   var pitch = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma * -1
+   var pitch = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma
    var roll = event.beta
    var yaw = event.alpha
    if (pitch < 0) yaw = (yaw + 180) % 360;
   
-   yaw = (yaw - 180) * -1
+   yaw = (yaw - 180)
    
    //angle /= 10
    //tilt /= 10
    roll /= 10
    
    cam.yaw = yaw
-   cam.pitch = pitch
+   cam.pitch = pitch  * -1
 }
 
 cam.yaw = 2
