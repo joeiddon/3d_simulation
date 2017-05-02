@@ -7,12 +7,12 @@ window.addEventListener("deviceorientation", phoneOrientation, true);
 cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
 
 function phoneOrientation(event){
-   var pitch = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma
-   var roll = event.beta
-   var yaw = event.alpha
+   pitch = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma
+   roll = event.beta
+   yaw = event.alpha
    if (pitch < 0) yaw = (yaw + 180) % 360;
   
-   //yaw = (yaw - 180) * -1
+   yaw = (yaw - 180) * -1
    
    //angle /= 10
    //tilt /= 10
@@ -105,7 +105,7 @@ function renderObjects(){		//draws the 3d objects from their coordinates and cam
 
 
 function renderWorld(){			 //draws the world from given cam perspective and object coodinates
-	document.getElementById("data").innerText = "Camera \xa0 x: " + padLeft(cam.x) + ", y: " + padLeft(cam.y) + ", z: " + padLeft(cam.z) + ", yaw: " + padLeft(cam.yaw) +  ", pitch: " + padLeft(cam.pitch)
+	document.getElementById("data").innerText = "Camera \xa0 x: " + padLeft(cam.x) + ", y: " + padLeft(cam.y) + ", z: " + padLeft(cam.z) + ", yaw: " + padLeft(cam.yaw) +  ", pitch: " + padLeft(cam.pitch) + ", Accelerometer: pitch: " + padLeft(pitch) + ", yaw: " + padLeft(yaw)
 
 	clearScreen()
 	
