@@ -32,6 +32,7 @@ window.addEventListener("keydown", keyPress)
 
 function keyPress(event){
 	key = event.keyCode
+	if (key == 67) resetWorld() 		    //c: the reset key
 	if (key == 88) cam.z -= 0.5				//x	fly down
 	if (key == 90) cam.z += 0.5				//z fly up
 	if (key == 87) takeStep(cam.yaw)		//w	walk forward
@@ -41,7 +42,7 @@ function keyPress(event){
 	if (key == 69) cam.yaw   += 3				//e	//look left
 	if (key == 81) cam.yaw   -= 3  			    //q	//look right
 	if (key == 82) cam.pitch += 3				//r	//look up
-	if (key == 70) cam.pitch -= 3   			//f	//look down
+	if (key == 70) cam.pitch -= 3   			//f	//look dowN
 	
 	renderWorld()
 }
@@ -145,6 +146,10 @@ function renderWorld(){			 //draws the world from given cam perspective and obje
 }
 
 setInterval(renderWorld, 10)
+
+function resetWorld(){
+	cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
+}
 
 
 //SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK //SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK
