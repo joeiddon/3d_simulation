@@ -1,7 +1,12 @@
 dcnvs = document.getElementById("cnvs")
 ctx = cnvs.getContext("2d")
 
-window.addEventListener("deviceorientation", function(event){
+
+window.addEventListener("deviceorientation", phoneOrientation, true); 
+
+cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
+
+function phoneOrientation(event){
    var pitch = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma
    var roll = event.beta
    var yaw = event.alpha
@@ -15,14 +20,13 @@ window.addEventListener("deviceorientation", function(event){
    
    cam.yaw = yaw
    cam.pitch = roll
-   
-}, true);
+}
 
 cam.yaw = 2
 
 document.addEventListener("keydown", keyPress)
 
-function keyPress(event){
+function keyPress(event){	
 	key = event.keyCode
 	if (key == 88) cam.z -= 0.5				//x	fly down
 	if (key == 90) cam.z += 0.5				//z fly up
