@@ -7,7 +7,7 @@ window.addEventListener("deviceorientation", phoneOrientation, true);
 cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
 
 function phoneOrientation(event){
-   var pitch = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma
+   var pitch = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma * -1
    var roll = event.beta
    var yaw = event.alpha
    if (pitch < 0) yaw = (yaw + 180) % 360;
@@ -44,8 +44,8 @@ function keyPress(event){
 
 var width, height
 
-cnvs.width = width = 720
-cnvs.height = height = 480
+cnvs.width = width = 480
+cnvs.height = height = 720
 
 colors = ["#F19292", "yellow", "teal", "green", "green", "cyan", "cyan", "cyan", "cyan", "cyan", "cyan", "orange"]
 
@@ -76,12 +76,12 @@ function drawPoints(canvasCoordinates){	//acctually does the drawing of the coor
 	for (s = 0; s < shapeIndexs.length; s++){
 		shape = shapeIndexs[s]
 		ctx.strokeStyle = "black"
-		ctx.beginPath(canvasCoordinates[shape[0]].x, canvasCoordinates[shape[0]].y)
+		ctx.beginPath(canvasCoordinates[shape[0]].y, height - canvasCoordinates[shape[0]].x)
 		for (p = 1; p < shape.length; p++){
-			ctx.lineTo(canvasCoordinates[shape[p]].x, canvasCoordinates[shape[p]].y)
+			ctx.lineTo(canvasCoordinates[shape[p]].y, height - canvasCoordinates[shape[p]].x)
 			ctx.stroke()
 		}
-		ctx.lineTo(canvasCoordinates[shape[0]].x, canvasCoordinates[shape[0]].y)
+		ctx.lineTo(canvasCoordinates[shape[0]].y, height - canvasCoordinates[shape[0]].x)
 		ctx.stroke()
 		ctx.closePath()
 		ctx.fillStyle = colors[s]
