@@ -4,18 +4,15 @@ cnvs2 = document.getElementById("cnvs2")
 ctx2 = cnvs2.getContext("2d")
 
 var width, height
-window.addEventListener("resize", resize, true)
 
-function resize(){
-	cnvs1.width = cnvs2.width = width =  900 //Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-	cnvs2.height = cnvs1.height = height = 720 //Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2 - 100
-}
-resize()
+cnvs1.width = cnvs2.width = width =  900 //Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+cnvs2.height = cnvs1.height = height = 720 //Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2 - 100
 
-document.addEventListener("keydown", keyPress)
+window.addEventListener("deviceorientation", phoneOrientation, true); 
 
+cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
 
-window.addEventListener("deviceorientation", function(event){
+function phoneOrientation(event){
    pitch = (event.gamma / Math.abs(event.gamma) * 90) - event.gamma
    roll = event.beta
    yaw = event.alpha
@@ -28,11 +25,10 @@ window.addEventListener("deviceorientation", function(event){
    roll /= 10
    
    cam.yaw = yaw
-   cam.pitch = roll
-   
-}, true);
+   cam.pitch = pitch  * -1
+}
 
-
+window.addEventListener("keydown", keyPress)
 
 function keyPress(event){
 	key = event.keyCode
@@ -60,9 +56,6 @@ coordinates = [{x: 3, y: 20, z: 1}, {x: 2, y: 20, z: 1}, {x: 2, y: 20, z: 0}, {x
 {x: -1, y: 23, z: 1.8}, {x: 1, y: 23, z: 1.8}, {x: 0, y: 23, z: 0.3}]									//triangle on back wall
 
 shapeIndexs = [[22,23,24,25], [26,27,28], [18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
-cam = {x: 0, y: 0, z: 3}
-
-cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
 pixAngleRatio = 18					//the amount of pixels that one degree spreads over
 step = 0.5
 var eyeDif = 0.28				//amount to shift cam by for different 
@@ -77,12 +70,12 @@ function drawPoints(points, canvas){	//acctually does the drawing of the coordin
 	for (s = 0; s < shapeIndexs.length; s++){
 		shape = shapeIndexs[s]
 		ctx1.strokeStyle = "black"
-		ctx1.beginPath(points[shape[0]].x, points[shape[0]].y)
+		ctx1.beginPath(points[shape[0]].y, height - points[shape[0]].x)
 		for (p = 1; p < shape.length; p++){
-			ctx1.lineTo(points[shape[p]].x, points[shape[p]].y)
+			ctx1.lineTo(points[shape[p]].y, height - points[shape[p]].x)
 			ctx1.stroke()
 		}	
-		ctx1.lineTo(points[shape[0]].x, points[shape[0]].y)
+		ctx1.lineTo(points[shape[0]].y, height - points[shape[0]].x)
 		ctx1.stroke()
 		ctx1.closePath()
 		ctx1.fillStyle = colors[s]
@@ -110,30 +103,34 @@ function drawPoints(points, canvas){	//acctually does the drawing of the coordin
 
 function renderObjects(){		//draws the 3d objects from their coordinates and cam position onto canvas in 2d
 	
-	//RENDERING LEFT WORLD 2D COORDINATE POSITIONS
+	//RENDERING RIGHT WORLD 2D COORDINATE POSITIONS
+	rightCoords = coordinates.map(o => ({x: o.x + eyeDif, y: o.y, z: o.z}) )
+	
 	xWorldRotate = (r) => (o => ({x: o.x,  y: ( (o.y - cam.y) * Math.cos(r) + ((o.z - cam.z) * Math.sin(r)) ) + cam.y ,  z: ( ( -1 * (o.y - cam.y) * Math.sin(r)) + ((o.z - cam.z) * Math.cos(r)) ) + cam.z }))
 	zWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) - ((o.y - cam.y) * Math.sin(r))) + cam.x ,  y: ( ((o.x - cam.x) * Math.sin(r)) + ((o.y - cam.y) * Math.cos(r)) ) + cam.y,  z: o.z}))
 	
-	transformedCoords = coordinates.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) ))
+	transformedCoords = rightCoords.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) ))
 	
 	coordinateAngles = transformedCoords.map(o => ({yaw: degFromRad(Math.atan((o.x - cam.x) / Math.sqrt((o.x - cam.x) * (o.x - cam.x) + (o.y - cam.y) * (o.y - cam.y) ))), pitch: degFromRad(Math.atan((o.z - cam.z) / (o.y - cam.y))) })  )
 	
 	canvasCoordinates = coordinateAngles.map(o => ( { x: width / 2 + (o.yaw * pixAngleRatio), y: height / 2 - (o.pitch * pixAngleRatio) } ))
 	
 	drawPoints(canvasCoordinates, 1)
-	
-	//RENDERING RIGHT WORLD 2D COORDINATE POSITIONS
+
+	//RENDERING LEFT WORLD 2D COORDINATE POSITIONS
+	leftCoords = coordinates.map(o => ({x: o.x - eyeDif, y: o.y, z: o.z}) )
 	
 	xWorldRotate = (r) => (o => ({x: o.x,  y: ( (o.y - cam.y) * Math.cos(r) + ((o.z - cam.z) * Math.sin(r)) ) + cam.y ,  z: ( ( -1 * (o.y - cam.y) * Math.sin(r)) + ((o.z - cam.z) * Math.cos(r)) ) + cam.z }))
 	zWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) - ((o.y - cam.y) * Math.sin(r))) + cam.x ,  y: ( ((o.x - cam.x) * Math.sin(r)) + ((o.y - cam.y) * Math.cos(r)) ) + cam.y,  z: o.z}))
 	
-	transformedCoords = coordinates.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) ))
+	transformedCoords = leftCoords.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) ))
 	
 	coordinateAngles = transformedCoords.map(o => ({yaw: degFromRad(Math.atan((o.x - cam.x) / Math.sqrt((o.x - cam.x) * (o.x - cam.x) + (o.y - cam.y) * (o.y - cam.y) ))), pitch: degFromRad(Math.atan((o.z - cam.z) / (o.y - cam.y))) })  )
 	
 	canvasCoordinates = coordinateAngles.map(o => ( { x: width / 2 + (o.yaw * pixAngleRatio), y: height / 2 - (o.pitch * pixAngleRatio) } ))
 	
 	drawPoints(canvasCoordinates, 2)
+	
 	
 }
 
