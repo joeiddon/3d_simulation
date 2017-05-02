@@ -113,7 +113,7 @@ function renderWorld(){			 //draws the world from given cam perspective and obje
 	renderCrosshairs()
 }
 
-renderWorld()
+setInterval(renderWorld, 10);
 
 
 
