@@ -26,7 +26,7 @@ function phoneOrientation(event){
    
    cam.yaw = yaw
    cam.pitch = pitch  * -1
-   //cam.roll = roll
+   cam.roll = roll
 }
 
 window.addEventListener("keydown", keyPress)
