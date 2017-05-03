@@ -129,7 +129,7 @@ function renderObjects(){		//draws the 3d objects from their coordinates and cam
 	yWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) + ((o.z - cam.z) * Math.sin(r))) + cam.x ,  y:  o.y,  z : ( -1 * ((o.x - cam.x) * Math.sin(r)) + ((o.z - cam.z) * Math.cos(r)) ) + cam.z}))
 	zWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) - ((o.y - cam.y) * Math.sin(r))) + cam.x ,  y: ( ((o.x - cam.x) * Math.sin(r)) + ((o.y - cam.y) * Math.cos(r)) ) + cam.y,  z: o.z}))
 	
-	transformedCoords = leftCoords.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) )).map( yWorldRotate(radFromDeg(cam.roll) ) )
+	transformedCoords = leftCoords.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) ))//.map( yWorldRotate(radFromDeg(cam.roll) ) )
 	
 	coordinateAngles = transformedCoords.map(o => ({yaw: degFromRad(Math.atan((o.x - cam.x) / Math.sqrt((o.x - cam.x) * (o.x - cam.x) + (o.y - cam.y) * (o.y - cam.y) ))), pitch: degFromRad(Math.atan((o.z - cam.z) / (o.y - cam.y))) })  )
 	
