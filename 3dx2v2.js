@@ -22,11 +22,11 @@ function phoneOrientation(event){
    
    //angle /= 10
    //tilt /= 10
-   roll /= 10
+   //roll /= 10
    
    cam.yaw = yaw
    cam.pitch = pitch  * -1
-   cam.roll = roll
+   //cam.roll = roll
 }
 
 window.addEventListener("keydown", keyPress)
