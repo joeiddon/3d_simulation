@@ -15,6 +15,8 @@ function keyPress(event){
 	if (key == 81) cam.yaw   -= 3  			    //q	//look right
 	if (key == 82) cam.pitch += 3				//r	//look up
 	if (key == 70) cam.pitch -= 3   			//f	//look down
+	if (key == 89) cam.roll  += 3				//y //roll left
+	if (key == 84) cam.roll  -= 3				//t //roll right
 	
 	renderWorld()
 }
@@ -24,34 +26,59 @@ var width, height
 cnvs.width = width = 720
 cnvs.height = height = 480
 
-colors = ["#F19292", "yellow", "teal", "green", "green", "cyan", "cyan", "cyan", "cyan", "cyan", "cyan", "orange"]
+colors = ["#F19292", "yellow", "teal", "green", "cyan", "orange"]
 
 coordinates = [{x: 3, y: 20, z: 1}, {x: 2, y: 20, z: 1}, {x: 2, y: 20, z: 0}, {x: 3, y: 20, z: 0}, {x: 3, y: 22, z: 0}, {x: 2, y: 22, z: 0},														  //dad chair
 {x: -1 , y: 17, z: 0}, {x: -1.5, y: 17, z: 0}, {x: -1.5, y: 17.5, z: 0}, {x: -1, y: 17.5, z: 0}, {x: -1 , y: 17, z: 3}, {x: -1.5, y: 17, z: 3}, {x: -1.5, y: 17.5, z: 3}, {x: -1, y: 17.5, z: 3}, //tall collumn
-{x: 0, y: 16, z: 0}, {x: 0, y: 15, z: 0}, {x: -1, y: 15, z: 0}, {x: -1, y: 16, z: 0},					//flat shape on 0,0
+{x: 0, y: 16, z: 0}, {x: 0, y: 15, z: 0}, {x: -1, y: 15, z: 0}, {x: -1, y: 16, z: 0},					//square on floor
 {x: -4, y: 14, z: 0}, {x: -4, y: 23, z: 0}, {x: 4, y: 23, z: 0}, {x: 4, y: 14, z: 0},					//floor
 {x: -4, y: 23, z: 0}, {x: 4, y: 23, z: 0}, {x: 4, y: 23, z: 2.5}, {x: -4, y: 23, z: 2.5},			    //back wall
 {x: -1, y: 23, z: 1.8}, {x: 1, y: 23, z: 1.8}, {x: 0, y: 23, z: 0.3}]									//triangle on back wall
 
 
-shapeIndexs = [[22,23,24,25], [26,27,28], [18,19,20,21], [2,3,4,5], [0,1,2,3], [6,7,8,9], [8,9,13,12], [7,8,12,11], [6,9,13,10], [10,11,12,13], [6,7,11,10], [14,15,16,17]]
+faceVerticies = [
+{v: [22,23,24,25], c: 0}, 					//back wall
+{v: [26,27,28], c: 1},						//triangle on back wall
+{v: [18,19,20,21], c: 2},					//floor
+{v: [2,3,4,5], c: 3}, {v: [0,1,2,3], c: 3},																											//dad chair
+{v: [6,7,8,9], c: 4}, {v: [8,9,13,12], c: 4}, {v: [7,8,12,11], c: 4}, {v: [6,9,13,10], c: 4}, {v: [10,11,12,13], c: 4}, {v: [6,7,11,10], c: 4},		//tall collumn
+{v: [14,15,16,17], c: 5}]					//square on floor
 
 
-cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
+cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0, roll: 0}		//coordinates of the camera
 pixAngleRatio = 18					//the amount of pixels that one degree spreads over
 step = 0.5
+
+distanceBetween = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2) + Math.pow(co2.z - co1.z , 2))
+
+function centroidFace(face){	
+	face = face.map(co => coordinates[co])
+	avgCo = {x: 0, y: 0, z: 0}
+	for (c = 0; c < face.length; c++){
+		cord = face[c]
+		avgCo.x += cord.x
+		avgCo.y += cord.y
+		avgCo.z += cord.z
+	}
+	return {x: avgCo.x / face.length, y: avgCo.y / face.length, z: avgCo.z / face.length}
+}
 
 
 function takeStep(yaw){
 	cam.x = step * Math.sin(radFromDeg(yaw)) + cam.x
 	cam.y = step * Math.cos(radFromDeg(yaw)) + cam.y
 }
-	
+
+function sortFaceVerticies(a, b){
+	if ( distanceBetween(cam, centroidFace(a.v)) >  distanceBetween(cam, centroidFace(b.v)) ) return -1
+	return 1
+}
 	
 
 function drawPoints(canvasCoordinates){	//acctually does the drawing of the coordinates from the canvas coordinates fills in with reference to the shape index array
-	for (s = 0; s < shapeIndexs.length; s++){
-		shape = shapeIndexs[s]
+	sortedFaces = faceVerticies//.sort(sortFaceVerticies)
+	for (s = 0; s < sortedFaces.length; s++){
+		shape = sortedFaces[s].v
 		ctx.strokeStyle = "black"
 		ctx.beginPath(canvasCoordinates[shape[0]].x, canvasCoordinates[shape[0]].y)
 		for (p = 1; p < shape.length; p++){
@@ -61,7 +88,7 @@ function drawPoints(canvasCoordinates){	//acctually does the drawing of the coor
 		ctx.lineTo(canvasCoordinates[shape[0]].x, canvasCoordinates[shape[0]].y)
 		ctx.stroke()
 		ctx.closePath()
-		ctx.fillStyle = colors[s]
+		ctx.fillStyle = colors[sortedFaces[s].c]
 		ctx.fill()
 	}
 }
@@ -69,9 +96,10 @@ function drawPoints(canvasCoordinates){	//acctually does the drawing of the coor
 function renderObjects(){		//draws the 3d objects from their coordinates and cam position onto canvas in 2d
 	
 	xWorldRotate = (r) => (o => ({x: o.x,  y: ( (o.y - cam.y) * Math.cos(r) + ((o.z - cam.z) * Math.sin(r)) ) + cam.y ,  z: ( ( -1 * (o.y - cam.y) * Math.sin(r)) + ((o.z - cam.z) * Math.cos(r)) ) + cam.z }))
+	yWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) + ((o.z - cam.z) * Math.sin(r))) + cam.x ,  y:  o.y,  z : ( -1 * ((o.x - cam.x) * Math.sin(r)) + ((o.z - cam.z) * Math.cos(r)) ) + cam.z}))
 	zWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) - ((o.y - cam.y) * Math.sin(r))) + cam.x ,  y: ( ((o.x - cam.x) * Math.sin(r)) + ((o.y - cam.y) * Math.cos(r)) ) + cam.y,  z: o.z}))
 	
-	transformedCoords = coordinates.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) ))
+	transformedCoords = coordinates.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) )).map( yWorldRotate(radFromDeg(cam.roll) ) )
 	
 	coordinateAngles = transformedCoords.map(o => ({yaw: degFromRad(Math.atan((o.x - cam.x) / Math.sqrt((o.x - cam.x) * (o.x - cam.x) + (o.y - cam.y) * (o.y - cam.y) ))), pitch: degFromRad(Math.atan((o.z - cam.z) / (o.y - cam.y))) })  )
 	
@@ -82,7 +110,7 @@ function renderObjects(){		//draws the 3d objects from their coordinates and cam
 
 
 function renderWorld(){			 //draws the world from given cam perspective and object coodinates
-	document.getElementById("data").innerText = "Camera \xa0 x: " + padLeft(cam.x) + ", y: " + padLeft(cam.y) + ", z: " + padLeft(cam.z) + ", yaw: " + padLeft(cam.yaw) +  ", pitch: " + padLeft(cam.pitch)
+	document.getElementById("data").innerText = "Camera \xa0 x: " + padLeft(cam.x) + ", y: " + padLeft(cam.y) + ", z: " + padLeft(cam.z) + ", yaw: " + padLeft(cam.yaw) +  ", pitch: " + padLeft(cam.pitch) + ", roll: " + padLeft(cam.roll)
 
 	clearScreen()
 	
