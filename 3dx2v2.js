@@ -26,6 +26,7 @@ function phoneOrientation(event){
    
    cam.yaw = yaw
    cam.pitch = pitch  * -1
+   //cam.roll = roll
 }
 
 window.addEventListener("keydown", keyPress)
@@ -60,6 +61,8 @@ shapeIndexs = [[22,23,24,25], [26,27,28], [18,19,20,21], [2,3,4,5], [0,1,2,3], [
 pixAngleRatio = 18					//the amount of pixels that one degree spreads over
 step = 0.5
 var eyeDif = 0.28				//amount to shift cam by for different 
+var tour = true
+
 
 function takeStep(yaw){
 	cam.x = step * Math.sin(radFromDeg(yaw)) + cam.x
@@ -108,9 +111,10 @@ function renderObjects(){		//draws the 3d objects from their coordinates and cam
 	rightCoords = coordinates.map(o => ({x: o.x + eyeDif, y: o.y, z: o.z}) )
 	
 	xWorldRotate = (r) => (o => ({x: o.x,  y: ( (o.y - cam.y) * Math.cos(r) + ((o.z - cam.z) * Math.sin(r)) ) + cam.y ,  z: ( ( -1 * (o.y - cam.y) * Math.sin(r)) + ((o.z - cam.z) * Math.cos(r)) ) + cam.z }))
+	yWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) + ((o.z - cam.z) * Math.sin(r))) + cam.x ,  y:  o.y,  z : ( -1 * ((o.x - cam.x) * Math.sin(r)) + ((o.z - cam.z) * Math.cos(r)) ) + cam.z}))
 	zWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) - ((o.y - cam.y) * Math.sin(r))) + cam.x ,  y: ( ((o.x - cam.x) * Math.sin(r)) + ((o.y - cam.y) * Math.cos(r)) ) + cam.y,  z: o.z}))
 	
-	transformedCoords = rightCoords.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) ))
+	transformedCoords = rightCoords.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) )).map( yWorldRotate(radFromDeg(cam.roll) ) )
 	
 	coordinateAngles = transformedCoords.map(o => ({yaw: degFromRad(Math.atan((o.x - cam.x) / Math.sqrt((o.x - cam.x) * (o.x - cam.x) + (o.y - cam.y) * (o.y - cam.y) ))), pitch: degFromRad(Math.atan((o.z - cam.z) / (o.y - cam.y))) })  )
 	
@@ -122,9 +126,10 @@ function renderObjects(){		//draws the 3d objects from their coordinates and cam
 	leftCoords = coordinates.map(o => ({x: o.x - eyeDif, y: o.y, z: o.z}) )
 	
 	xWorldRotate = (r) => (o => ({x: o.x,  y: ( (o.y - cam.y) * Math.cos(r) + ((o.z - cam.z) * Math.sin(r)) ) + cam.y ,  z: ( ( -1 * (o.y - cam.y) * Math.sin(r)) + ((o.z - cam.z) * Math.cos(r)) ) + cam.z }))
+	yWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) + ((o.z - cam.z) * Math.sin(r))) + cam.x ,  y:  o.y,  z : ( -1 * ((o.x - cam.x) * Math.sin(r)) + ((o.z - cam.z) * Math.cos(r)) ) + cam.z}))
 	zWorldRotate = (r) => (o => ({x: ( ((o.x - cam.x) * Math.cos(r)) - ((o.y - cam.y) * Math.sin(r))) + cam.x ,  y: ( ((o.x - cam.x) * Math.sin(r)) + ((o.y - cam.y) * Math.cos(r)) ) + cam.y,  z: o.z}))
 	
-	transformedCoords = leftCoords.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) ))
+	transformedCoords = leftCoords.map( xWorldRotate(radFromDeg(cam.pitch)) ).map( zWorldRotate(radFromDeg(cam.yaw) )).map( yWorldRotate(radFromDeg(cam.roll) ) )
 	
 	coordinateAngles = transformedCoords.map(o => ({yaw: degFromRad(Math.atan((o.x - cam.x) / Math.sqrt((o.x - cam.x) * (o.x - cam.x) + (o.y - cam.y) * (o.y - cam.y) ))), pitch: degFromRad(Math.atan((o.z - cam.z) / (o.y - cam.y))) })  )
 	
@@ -137,7 +142,7 @@ function renderObjects(){		//draws the 3d objects from their coordinates and cam
 
 
 function renderWorld(){			 //draws the world from given cam perspective and object coodinates
-	document.getElementById("data").innerText = "Camera \xa0 x: " + padLeft(cam.x) + ", y: " + padLeft(cam.y) + ", z: " + padLeft(cam.z) + ", yaw: " + padLeft(cam.yaw) +  ", pitch: " + padLeft(cam.pitch)
+	document.getElementById("data").innerText = "Camera \xa0 x: " + padLeft(cam.x) + ", y: " + padLeft(cam.y) + ", z: " + padLeft(cam.z) + ", yaw: " + padLeft(cam.yaw) +  ", pitch: " + padLeft(cam.pitch) + ", roll: " + padLeft(cam.roll)
 
 	clearScreen()
 	
@@ -147,12 +152,10 @@ function renderWorld(){			 //draws the world from given cam perspective and obje
 
 setInterval(renderWorld, 10)
 
+//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK //SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK
 function resetWorld(){
 	cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0}		//coordinates of the camera
 }
-
-
-//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK //SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK//SHORT USEFULL FUNCTIONS THAT ARE USED BUT ALREADY WORK
 
 function padLeft(num){		//returns string of number padded from left to make a 5 charachter string
 	return ("\xa0\xa0\xa0\xa0" + parseInt(num)).slice(-5)
