@@ -103,9 +103,9 @@ function renderObjects(){		//draws the 3d objects from their coordinates and cam
 	drawPoints(canvasCoordinates)
 }
 
-function map3dTo2d(o){
-	yaw = degFromRad( Math.atan((o.x - cam.x) / (o.y - cam.y))  )- cam.yaw
-	pitch = degFromRad(Math.atan((o.z - cam.z) / (o.y - cam.y))) - cam.pitch
+function map3dTo2d(coord){
+	yaw = degFromRad( Math.atan((coord.x - cam.x) / (coord.y - cam.y))  ) - cam.yaw
+	pitch = degFromRad(Math.atan((coord.z - cam.z) / (coord.y - cam.y))) - cam.pitch
 	return {yaw: yaw, pitch: pitch}
 }
 
@@ -126,11 +126,19 @@ function renderMiniMap(){
 	
 }
 
+function moduloCamViewpoint(){
+	while (cam.yaw <= -180) cam.yaw += 360
+	while (cam.yaw > 180) cam.yaw -= 360
+	while (cam.pitch <= -180) cam.pitch += 360
+	while (cam.pitch > 180) cam.pitch -= 360
+}
+
 function renderWorld(){			 //draws the world from given cam perspective and object coodinates
 	document.getElementById("data").innerText = "Camera \xa0 x: " + padLeft(cam.x) + ", y: " + padLeft(cam.y) + ", z: " + padLeft(cam.z) + ", yaw: " + padLeft(cam.yaw) +  ", pitch: " + padLeft(cam.pitch) + ", roll: " + padLeft(cam.roll)
 
-	clearScreen()
+	moduloCamViewpoint()
 	
+	clearScreen()
 	renderObjects()
 	renderCrosshairs()
 	renderMiniMap()
