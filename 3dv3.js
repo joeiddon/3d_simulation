@@ -160,7 +160,7 @@ function renderMiniMap(){
 	
 	
 	
-	ctx.fillStyle = "rgbA(107,255,125,0.3)"
+	ctx.fillStyle = "rgbA(107,255,125,0.5)"
 	ctx.beginPath(centerX + cam.x, centerY + cam.y * -1 + pointLower)
 	ctx.lineTo(centerX + (Math.sin(radFromDeg(cam.yaw - 0.5 * fov)) * arrowLength) + cam.x, centerY - (Math.cos(radFromDeg(cam.yaw - 0.5 * fov)) * arrowLength) + cam.y * -1 + pointLower)
 	ctx.arc(centerX + cam.x, centerY + cam.y * -1 + pointLower, arrowLength, radFromDeg(-90 - fov * 0.5 + cam.yaw), radFromDeg(-90 + fov * 0.5 + cam.yaw) )
