@@ -64,7 +64,7 @@ function dotProduct(a, b){
 function crossProduct(a, b){
   return {
     x: a.y * b.z - b.y * a.z,
-    y: a.x * b.z - b.x * a.z,
+    y: - a.x * b.z + b.x * a.z,
     z: a.x * b.y - b.x * a.y
   };
 }
@@ -189,38 +189,27 @@ function plane1First(plane0, plane1, camera){
   //   0Ca\  | /Ca\   | /Ca\   | /Ca1
 
 
-  // Use just the first point in the list to elimiate Case[2,3,7,8]
-  p0AndCamera = arePointsOnSameSideOfPlane(plane1, plane0.points[0], camera);
-  p1AndCamera = arePointsOnSameSideOfPlane(plane0, plane1.points[0], camera);
-  if( p0AndCamera && !p1AndCamera) return 0; // Case2/7/9/11
-  if(!p0AndCamera &&  p1AndCamera) return 1; // Case3/8/10/11
-
-  // At this point:
-  // Case[2,3,7,8] have been dealt with
-  // Case[1,4,5,6] still haven't be dealt with at all
-  // Case[9,10,11,12] have been partially dealt with (depending
-  //                  on which side planeX.points[0] was on)
-
-  // We don't care about the return value for Case[1,4,5,6] so we
-  // only need to sort out Case[9,10,11,12]
-
-  if( p0AndCamera &&  p1AndCamera){
-    // This must be:
-    //  Case[1,5,6] -> draw either first
-    //  Case9       -> draw 0 first
-    //  Case12      -> draw 1 first
-    if(areAllPointsOnSameSide(plane1, plane0.points)) return 0;// Case9
-    if(areAllPointsOnSameSide(plane0, plane1.points)) return 1;// Case12
-    return 1;// Case[1,5,6]
+  // Everything except Case[11,12]
+  if(areAllPointsOnSameSide(plane1, plane0.points)){
+    // At this point:
+    // RETURN 1
+    //  Only draw 1 first if Case[3,8,10] which all have 0 behind plane1
+    // RETURN 0
+    //  Otherwise draw 0 first if Case[2,7,9]
+    //  Otherwise don't care what drawn first (Case[1,4,5,6])
+    return !arePointsOnSameSideOfPlane(plane1, plane0.points[0], camera);
   }
-  if(!p0AndCamera && !p1AndCamera){
-    // This must be:
-    //  Case4  -> draw either first
-    //  Case10 -> draw 1 first
-    //  Case11 -> draw 0 first
-    if(areAllPointsOnSameSide(plane1, plane0.points)) return 1;// Case10
-    if(areAllPointsOnSameSide(plane0, plane1.points)) return 0;// Case11
-    return 0; // Case4
+
+  // Rule out Case[9,10]
+  if(areAllPointsOnSameSide(plane0, plane1.points)){
+    // At this point:
+    // RETURN 0
+    //  Only draw 0 first if Case[2,7,11] which all have 1 behind plane0
+    // RETURN 1
+    //  Otherwise draw 1 first if Case[3,8,12]
+    //  Otherwise don't care what drawn first (Case[1,4,5,6])
+    return arePointsOnSameSideOfPlane(plane0,
+                                      plane1.points[0], camera) ? 1 : 0;
   }
 
 
