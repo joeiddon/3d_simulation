@@ -8,5 +8,6 @@
 - [3dv3.html](https://roadkillcat.github.io/3dSimulationVR/3dv3.html)
 - [3dv2.html](https://roadkillcat.github.io/3dSimulationVR/3dv2.html)
 
-
-<html><img src="http://i.imgur.com/hUtaVy1.jpg" height="500" width="700">
+<html>
+<p>liaj ot og<img src="http://i.imgur.com/hUtaVy1.jpg" height="150" width="200" align="400">
+</html>
