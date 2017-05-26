@@ -1,8 +1,4 @@
-<html>
-<span style="colour:green"> versions below </span>
-
-</html>
-
+#Links to the different versions below:
 
 - [3dx2v2tour.html](https://roadkillcat.github.io/3dSimulationVR/3dx2v2tour.html)
 - [3dx2v2.html](https://roadkillcat.github.io/3dSimulationVR/3dx2v2.html)
