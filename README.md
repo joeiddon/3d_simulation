@@ -1,4 +1,4 @@
-#Links to the different versions below:
+# **Links to the different versions below:**
 
 - [3dx2v2tour.html](https://roadkillcat.github.io/3dSimulationVR/3dx2v2tour.html)
 - [3dx2v2.html](https://roadkillcat.github.io/3dSimulationVR/3dx2v2.html)
@@ -9,4 +9,4 @@
 - [3dv2.html](https://roadkillcat.github.io/3dSimulationVR/3dv2.html)
 
 
-<html><img src="http://i.imgur.com/hUtaVy1.jpg">
+<html><img src="http://i.imgur.com/hUtaVy1.jpg" height="500" width="700">
