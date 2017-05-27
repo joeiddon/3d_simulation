@@ -11,12 +11,12 @@ function keyPress(event){
 	if (key == 83) takeStep(cam.yaw + 180)	//s walk backwards
 	if (key == 65) takeStep(cam.yaw - 90)	//a walk left
 	if (key == 68) takeStep(cam.yaw + 90)	//d walk right
-	if (key == 69) cam.yaw   += 3				//e	//look left
-	if (key == 81) cam.yaw   -= 3  			    //q	//look right
-	if (key == 82) cam.pitch += 3				//r	//look up
-	if (key == 70) cam.pitch -= 3   			//f	//look down
-	if (key == 89) cam.roll  += 3				//y //roll left
-	if (key == 84) cam.roll  -= 3				//t //roll right
+	if (key == 69) cam.yaw   += lookStep			//e	//look left
+	if (key == 81) cam.yaw   -= lookStep  			//q	//look right
+	if (key == 82) cam.pitch += lookStep			//r	//look up
+	if (key == 70) cam.pitch -= lookStep   			//f	//look down
+	if (key == 89) cam.roll  += lookStep			//y //roll left
+	if (key == 84) cam.roll  -= lookStep			//t //roll right
 	
 	renderWorld()
 }
@@ -26,7 +26,7 @@ var width, height
 cnvs.width = width = 1440
 cnvs.height = height = 900
 
-colors = ["#F19292", "yellow", "teal", "green", "cyan", "orange"]
+colors = ["#F19292", "yellow", "teal", "green", "cyan", "orange", "black"]
 
 coordinates = [
 {x: 3, y: 20, z: 1}, {x: 2, y: 20, z: 1}, {x: 2, y: 20, z: 0}, {x: 3, y: 20, z: 0}, {x: 3, y: 22, z: 0}, {x: 2, y: 22, z: 0},														  //dad chair
@@ -36,11 +36,7 @@ coordinates = [
 {x: -4, y: 23, z: 0}, {x: 4, y: 23, z: 0}, {x: 4, y: 23, z: 2.5}, {x: -4, y: 23, z: 2.5},			    //back wall
 {x: -1, y: 23, z: 1.8}, {x: 1, y: 23, z: 1.8}, {x: 0, y: 23, z: 0.3},									//triangle on back wall
 {x: -10, y: 50, z: 0}, {x: -10, y: 60, z: 0}, {x: 10, y: 60, z: 0}, {x: 10, y: 50, z: 0}
-
-
-
 ]
-
 
 faceVerticies = [
 {v: [29,30,31,32], c: 5},
@@ -52,37 +48,34 @@ faceVerticies = [
 {v: [14,15,16,17], c: 5}					//square on floor
 ]
 
+for (r = 0; r <= 100; r += 2){
+	coordinates.push({x: -50 + r, y: 10, z: 0})
+	coordinates.push({x: -50 + r, y: 110, z: 0})
+	faceVerticies.unshift({v: [coordinates.length -1, coordinates.length-2], c: 6 })
+}
+
+for (r = 0; r <= 100; r += 2){
+	coordinates.push({x: -50, y: 10 + r, z: 0})
+	coordinates.push({x: 50, y: 10 + r, z: 0})
+	faceVerticies.unshift({v: [coordinates.length -1, coordinates.length-2], c: 6 })
+}
+
+
 cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0, roll: 0}		//coordinates of the camera
 fov = 50 						//field of view in degrees
 
 pixelsPerDegree = width / fov					//the amount of pixels that one degree spreads over
-step = 0.5
+walkStep = 4
+lookStep = 10
 
 distanceBetween = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2) + Math.pow(co2.z - co1.z , 2))
 
-function centroidFace(face){	
-	face = face.map(co => coordinates[co])
-	avgCo = {x: 0, y: 0, z: 0}
-	for (c = 0; c < face.length; c++){
-		cord = face[c]
-		avgCo.x += cord.x
-		avgCo.y += cord.y
-		avgCo.z += cord.z
-	}
-	return {x: avgCo.x / face.length, y: avgCo.y / face.length, z: avgCo.z / face.length}
-}
-
 
 function takeStep(yaw){
-	cam.x = step * Math.sin(radFromDeg(yaw)) + cam.x
-	cam.y = step * Math.cos(radFromDeg(yaw)) + cam.y
+	cam.x = walkStep * Math.sin(radFromDeg(yaw)) + cam.x
+	cam.y = walkStep * Math.cos(radFromDeg(yaw)) + cam.y
 }
 
-function sortFaceVerticies(a, b){
-	if ( distanceBetween(cam, centroidFace(a.v)) >  distanceBetween(cam, centroidFace(b.v)) ) return -1
-	return 1
-}
-	
 
 function drawPoints(canvasCoordinates){	//acctually does the drawing of the coordinates from the canvas coordinates fills in with reference to the shape index array
 	sortedFaces = faceVerticies//.sort(sortFaceVerticies)
@@ -102,22 +95,35 @@ function drawPoints(canvasCoordinates){	//acctually does the drawing of the coor
 	}
 }
 
-function renderObjects(){		//draws the 3d objects from their coordinates and cam position onto canvas in 2d	
+function renderObjects(){				//draws the 3d objects from their coordinates and cam position onto canvas in 2d	
 
-	coordinateAngles = coordinates.map(map3dTo2d)
+	worldTransate = (x,y,z) => (o => ({x: o.x + x, y: o.y + y, z: o.z + z}))
+
+
+	xWorldRotate = (r) => (  o => ({x: o.x,  y: o.y * Math.cos(r) + o.z * Math.sin(r),  z:  -o.y * Math.sin(r) + o.z * Math.cos(r) })  )
+	yWorldRotate = (r) => (  o => ({x: o.x * Math.cos(r) + o.z * Math.sin(r),  y: o.y,  z : -o.x * Math.sin(r) + o.z * Math.cos(r)})   )
+	zWorldRotate = (r) => (  o => ({x: o.x * Math.cos(r) - o.y * Math.sin(r),  y: o.x * Math.sin(r) + o.y * Math.cos(r),  z: o.z})     )
+	
+	transformedCoords = coordinates.map(worldTransate(-cam.x, - cam.y, -cam.z)).map( zWorldRotate(radFromDeg(cam.yaw))).map(xWorldRotate(radFromDeg(cam.pitch))).map( yWorldRotate(radFromDeg(cam.roll))).map(worldTransate(cam.x,cam.y,cam.z))
+
+	coordinateAngles = transformedCoords.map(angleFromCoord)
 	canvasCoordinates = coordinateAngles.map(o => ( { x: width / 2 + (o.yaw * pixelsPerDegree), y: height / 2 - (o.pitch * pixelsPerDegree) } ))
 	
 	drawPoints(canvasCoordinates)
 }
 
-function map3dTo2d(coord){
-	yaw = degFromRad( Math.atan((coord.x - cam.x) / (coord.y - cam.y)) ) - cam.yaw
-	pitch = degFromRad(Math.atan((coord.z - cam.z) / (coord.y - cam.y))) - cam.pitch
+function angleFromCoord(coord){									   //takes a coordinate and returns the yaw and pitch angles from the camera
+	//yaw =  degFromRad( Math.atan((coord.x - cam.x) / (coord.y - cam.y)) ) - cam.yaw
+	
+	yaw =  degFromRad( Math.atan2(coord.x - cam.x, coord.y - cam.y) )
+	
+	pitch = degFromRad(Math.atan2(coord.z - cam.z, coord.y - cam.y) )
+	
 	return {yaw: yaw, pitch: pitch}
 }
 
 	
-function renderMiniMap(){
+function renderMiniMap(){										//renders the minimap
 	mapWidth = width / 5
 	mapHeight = height / 5
 	border = 0.6
@@ -156,16 +162,16 @@ function renderMiniMap(){
 	drawLine(centerX, centerY - 5 + pointLower, centerX, centerY + 5 + pointLower)
 	
 	ctx.fillStyle = "#00ffed"
-	ctx.fillRect(centerX + cam.x -2 , centerY + cam.y * -1 - 2 + pointLower, 4, 4)
+	ctx.fillRect(centerX + cam.x * scale -2 , centerY + cam.y * scale * -1 - 2 + pointLower, 4, 4)
 	
 	
 	
 	ctx.fillStyle = "rgbA(107,255,125,0.5)"
-	ctx.beginPath(centerX + cam.x, centerY + cam.y * -1 + pointLower)
-	ctx.lineTo(centerX + (Math.sin(radFromDeg(cam.yaw - 0.5 * fov)) * arrowLength) + cam.x, centerY - (Math.cos(radFromDeg(cam.yaw - 0.5 * fov)) * arrowLength) + cam.y * -1 + pointLower)
-	ctx.arc(centerX + cam.x, centerY + cam.y * -1 + pointLower, arrowLength, radFromDeg(-90 - fov * 0.5 + cam.yaw), radFromDeg(-90 + fov * 0.5 + cam.yaw) )
+	ctx.beginPath(centerX + cam.x * scale, centerY + cam.y * scale * -1 + pointLower)
+	ctx.lineTo(centerX + (Math.sin(radFromDeg(cam.yaw - 0.5 * fov)) * arrowLength) + cam.x * scale, centerY - (Math.cos(radFromDeg(cam.yaw - 0.5 * fov)) * arrowLength) + cam.y * scale * -1 + pointLower)
+	ctx.arc(centerX + cam.x * scale, centerY + cam.y * scale * -1 + pointLower, arrowLength, radFromDeg(-90 - fov * 0.5 + cam.yaw), radFromDeg(-90 + fov * 0.5 + cam.yaw) )
 	//ctx.lineTo(centerX + (Math.sin(radFromDeg(cam.yaw + 0.5 * fov)) * arrowLength) + cam.x, centerY - (Math.cos(radFromDeg(cam.yaw + 0.5 * fov)) * arrowLength) + cam.y * -1 )
-	ctx.lineTo(centerX + cam.x, centerY + cam.y * -1 + pointLower)
+	ctx.lineTo(centerX + cam.x * scale, centerY + cam.y * scale * -1 + pointLower)
 	ctx.closePath()
 	ctx.fill()
 	
@@ -178,7 +184,7 @@ function moduloCamViewpoint(){
 	while (cam.pitch > 180) cam.pitch -= 360
 }
 
-function renderWorld(){			 //draws the world from given cam perspective and object coodinates
+function renderWorld(){											//draws the world from given cam perspective and object coodinates
 	document.getElementById("data").innerText = "Camera \xa0 x: " + padLeft(cam.x) + ", y: " + padLeft(cam.y) + ", z: " + padLeft(cam.z) + ", yaw: " + padLeft(cam.yaw) +  ", pitch: " + padLeft(cam.pitch) + ", roll: " + padLeft(cam.roll)
 
 	moduloCamViewpoint()
@@ -197,23 +203,40 @@ renderWorld()
 
 //SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS
 
-function padLeft(num){		//returns string of number padded from left to make a 5 charachter string
+function centroidFace(face){									//returns centroid coordiante of  a face
+	face = face.map(co => coordinates[co])
+	avgCo = {x: 0, y: 0, z: 0}
+	for (c = 0; c < face.length; c++){
+		cord = face[c]
+		avgCo.x += cord.x
+		avgCo.y += cord.y
+		avgCo.z += cord.z
+	}
+	return {x: avgCo.x / face.length, y: avgCo.y / face.length, z: avgCo.z / face.length}
+}
+
+function sortFaceVerticies(a, b){								//orderes face verticies a and b
+	if ( distanceBetween(cam, centroidFace(a.v)) >  distanceBetween(cam, centroidFace(b.v)) ) return -1
+	return 1
+}
+	
+function padLeft(num){											//returns string of number padded from left to make a 5 charachter string
 	return ("\xa0\xa0\xa0\xa0" + parseFloat(num.toFixed(0))).slice(-5)
 }
 
-function drawLine(xStart, yStart, xFin, yFin){	//draws a line on the canvas
+function drawLine(xStart, yStart, xFin, yFin){					//draws a line on the canvas
    ctx.beginPath();
    ctx.moveTo(xStart, yStart);
    ctx.lineTo(xFin, yFin);
    ctx.stroke();
 }
 
-function drawCross(x, y, l){	 //draws a cross on canvas in relation to the midpoint
+function drawCross(x, y, l){									//draws a cross on canvas in relation to the midpoint
 	drawLine( width/2 + x + l, height / 2 + y, width / 2 + x - l, height /2 + y)
 	drawLine(width /2 + x, height / 2 + y + l,width / 2 + x, height /2 + y - l)
 }
 
-function renderCrosshairs(){			//draws the two axis and center crosshar
+function renderCrosshairs(){									//draws the two axis and center crosshar
 	drawCross(0, 0, 30)
 	for (a = 113.09; a <= 20 * 113.09; a += 113.09){
 		drawCross(a, 0, 5)
@@ -223,7 +246,7 @@ function renderCrosshairs(){			//draws the two axis and center crosshar
 	}
 }
 
-function degFromRad(rad){			//returns degree angle from radian angle
+function degFromRad(rad){										//returns degree angle from radian angle
 	return rad * (180 / Math.PI)
 }
 
@@ -231,6 +254,6 @@ function radFromDeg(deg){
 	return deg * ( Math.PI / 180)
 }
 
-function clearScreen(){				//returns canvas to balank screen
+function clearScreen(){											//returns canvas to balank screen
 	ctx.clearRect(0, 0, width, height)
 }
