@@ -34,11 +34,19 @@ tmp = new Plane(shape2);
 if(tmp.norm.x / tmp.norm.y != -1)
   throw "This shape should have a norm of the form (n,-n,0).";
 
+for(let tmp2 of shape2)
+  if(!isPointOnPlane(tmp2, tmp))
+    throw "All points of shape2 should be on shape2's plane.";
+
+for(let tmp2 of shape4)
+  if(isPointOnPlane(tmp2, tmp))
+    throw "All points on shape4 should not be on shape2's plane.";
+
 if(arePointsOnSameSideOfPlane(new Plane(shape2), {x:2, y:-1, z:0},
                               {x: 0, y: 0, z: 0}))
   throw "These points should be split by this plane!";
 
-
+// Without complicated shaped with points ON the intersect.
 test(shape1, shape2, [0, 0, 0], 10); // Case1
 test(shape1, shape3, [0, 0, 0], 0);  // Case2
 test(shape4, shape2, [0, 0, 0], 1);  // Case3
@@ -55,3 +63,17 @@ test(shape1, shape2.concat(shape3), [0, 0, 0], 0); // Case9
 test(shape4, shape2.concat(shape3), [0, 0, 0], 1); // Case10
 test(shape1.concat(shape4), shape3, [0, 0, 0], 0); // Case11
 test(shape1.concat(shape4), shape2, [0, 0, 0], 1); // Case12
+
+// WITH POINTS ON THE intersect
+shape7  = [[0,  1, 0], [1, 0, 1], [1, 0, -1]].map(arrayToObject);
+shape8  = [[0, -1, 0], [1, 0, 1], [1, 0, -1]].map(arrayToObject);
+shape9  = [[2,  1, 0], [1, 0, 1], [1, 0, -1]].map(arrayToObject);
+shape10 = [[2, -1, 0], [1, 0, 1], [1, 0, -1]].map(arrayToObject);
+test(shape7,  shape8, [0, 0, 0], 10); // Case1
+test(shape7,  shape9, [0, 0, 0], 0);  // Case2
+test(shape10, shape8, [0, 0, 0], 1);  // Case3
+test(shape10, shape9, [0, 0, 0], 10); // Case4
+test(shape7, shape2.concat(shape9), [0, 0, 0], 0); // Case9
+test(shape10, shape2.concat(shape9), [0, 0, 0], 1); // Case10
+test(shape1.concat(shape10), shape9, [0, 0, 0], 0); // Case11
+test(shape1.concat(shape10), shape8, [0, 0, 0], 1); // Case12

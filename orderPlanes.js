@@ -10,7 +10,7 @@
 // - The function "plane1First" returns:
 //     + true for plane1
 //     + false for plane0
-//     + true/false if it doesn't matter
+//     + one of true/false if it doesn't matter
 //   TODO: Ideally, it should return a third value if it doesn't matter. This
 //         would allow you to ignore it when sorting the list.
 //         Otherwise you could get an A>B, B>C, C>A error...
@@ -88,7 +88,8 @@ function Plane(points){
   p1Top3 = vectorFromAtoB(points[0], points[2]);
   // If you do the cross product of two vectors, you get
   // a vector that is at right angles to the two vectors.
-  // In this case, this is a normal to the plane.
+  // In this case, the two vectors are in the plane
+  // so the cross product is the normal to the plane.
   this.norm = crossProduct(p1Top2, p1Top3);
 }
 
@@ -96,7 +97,8 @@ function Plane(points){
 /* Returns whether the two vectors point in roughly the same
    direction.
 
-   Are they both pointing at or away from their intersect?
+   Are they both pointing in the same direction relative to
+   their intersect?
  */
 function pointingInSameDirection(a, b){
   // The dot product a . b is |a||b| cos (t) where t is the
@@ -113,7 +115,7 @@ function pointingInSameDirection(a, b){
   // So:
   // a . b > 0  if a and b are pointing broadly in same direction
   // a . b < 0  if a and b are pointing broadly in different direction
-  return dotProduct(a, b) > 0;
+  return dotProduct(a, b) >= 0;
   // if a . b == 0  then they are parallel
 }
 
@@ -123,8 +125,13 @@ function pointingInSameDirection(a, b){
    (point1, point2) are split by the plane (dividingPlane).
  */
 function arePointsOnSameSideOfPlane(dividingPlane, point1, point2){
+  // Must handle the case where the points are on the plane.
+  if(isPointOnPlane(point1, dividingPlane) ||
+     isPointOnPlane(point2, dividingPlane))
+    throw "The points shouldn't actually be on the plane!";
   // First calculate vectors from each of the points to a point
-  // on the plane.
+  // on the plane. As point1 and point2 are not actually on the
+  // plane, it's fine to use any of dividingPlane.points[] here.
   point1ToPlane = vectorFromAtoB(point1, dividingPlane.points[0]);
   point2ToPlane = vectorFromAtoB(point2, dividingPlane.points[0]);
 
@@ -150,11 +157,21 @@ function arePointsOnSameSideOfPlane(dividingPlane, point1, point2){
    side of a given plane
  */
 function areAllPointsOnSameSide(dividingPlane, listOfPoints){
+  let firstPointNotOnPlane = false;
   for(let checkIndex = 0 ; checkIndex < listOfPoints.length ; checkIndex++){
-
-    if(!arePointsOnSameSideOfPlane(dividingPlane, listOfPoints[0],
+    // If it is on the plane, move to the next point.
+    if(isPointOnPlane(listOfPoints[checkIndex], dividingPlane)) continue;
+    // If this is the first point not the plane, store it and move to next.
+    if(firstPointNotOnPlane === false){
+      firstPointNotOnPlane = listOfPoints[checkIndex];
+      continue;
+    }
+    // Compare this point with firstPointNotOnPlane
+    if(!arePointsOnSameSideOfPlane(dividingPlane, firstPointNotOnPlane,
                                    listOfPoints[checkIndex])) return false;
   }
+  // If it was never set
+  if(firstPointNotOnPlane === false) throw "They were all on the plane!";
   return true;
 }
 
@@ -197,7 +214,9 @@ function plane1First(plane0, plane1, camera){
     // RETURN 0
     //  Otherwise draw 0 first if Case[2,7,9]
     //  Otherwise don't care what drawn first (Case[1,4,5,6])
-    return !arePointsOnSameSideOfPlane(plane1, plane0.points[0], camera);
+    return !arePointsOnSameSideOfPlane(plane1,
+                                       getComparisonPoint(plane0, plane1),
+                                       camera);
   }
 
   // Rule out Case[9,10]
@@ -209,8 +228,40 @@ function plane1First(plane0, plane1, camera){
     //  Otherwise draw 1 first if Case[3,8,12]
     //  Otherwise don't care what drawn first (Case[1,4,5,6])
     return arePointsOnSameSideOfPlane(plane0,
-                                      plane1.points[0], camera) ? 1 : 0;
+                                      getComparisonPoint(plane1, plane0),
+                                      camera);
   }
 
 
+}
+
+/* Takes the point and calculates the vector to a point on the plane.
+ * If the dot product of this vector and the plane's normal is equal
+ * to zero then this point is on the plane.
+ *
+ * Returns true if the point is on the plane and false otherwise
+ */
+function isPointOnPlane(point, plane){
+  const TOLERANCE = 1e-5;  // Use a tolerance because floating point error
+  return Math.abs(dotProduct(vectorFromAtoB(point, plane.points[0]),
+                             plane.norm)) < TOLERANCE;
+}
+
+
+/*
+ * getComparisonPoint finds a point in the list of points for planeX
+ * which doesn't lie on planeY.
+ *
+ * This is useful when you want to pick any point on planeX to get a
+ * vector to planeY but don't want a vector which lies in the plane.
+ *
+ * Takes two plane objects planeX, planeY and returns a point on planeX.
+ */
+function getComparisonPoint(planeX, planeY){
+  let index = 0;
+  while(isPointOnPlane(planeX.points[index], planeY)) {
+    index++;
+    if(index >= planeX.points.length) throw "All points in planeX on planeY!";
+  }
+  return planeX.points[index];
 }
