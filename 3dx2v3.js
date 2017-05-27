@@ -33,6 +33,7 @@ document.addEventListener("keydown", keyPress)
 
 function keyPress(event){
 	key = event.keyCode
+	if (key == 67) resetWorld() 		    //c: the reset key
 	if (key == 88) cam.z -= 0.5				//x	fly down
 	if (key == 90) cam.z += 0.5				//z fly up
 	if (key == 87) takeStep(cam.yaw)		//w	walk forward
