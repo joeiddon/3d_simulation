@@ -51,28 +51,29 @@ function keyPress(event){
 }
 
 
-colors = ["#F19292", "yellow", "teal", "green", "cyan", "orange", "black"]
+var arrToObj = (a) => ({x:a[0], y:a[1], z:a[2]})
+colors = ["#F19292", "yellow", "teal", "green", "cyan", "orange", "black", "#c6b9cc"]
 
-coordinates = [
-{x: 3, y: 20, z: 1}, {x: 2, y: 20, z: 1}, {x: 2, y: 20, z: 0}, {x: 3, y: 20, z: 0}, {x: 3, y: 22, z: 0}, {x: 2, y: 22, z: 0},														  //dad chair
-{x: -1 , y: 17, z: 0}, {x: -1.5, y: 17, z: 0}, {x: -1.5, y: 17.5, z: 0}, {x: -1, y: 17.5, z: 0}, {x: -1 , y: 17, z: 3}, {x: -1.5, y: 17, z: 3}, {x: -1.5, y: 17.5, z: 3}, {x: -1, y: 17.5, z: 3}, //tall collumn
-{x: 0, y: 16, z: 0}, {x: 0, y: 15, z: 0}, {x: -1, y: 15, z: 0}, {x: -1, y: 16, z: 0},					//square on floor
-{x: -4, y: 14, z: 0}, {x: -4, y: 23, z: 0}, {x: 4, y: 23, z: 0}, {x: 4, y: 14, z: 0},					//floor
-{x: -4, y: 23, z: 0}, {x: 4, y: 23, z: 0}, {x: 4, y: 23, z: 2.5}, {x: -4, y: 23, z: 2.5},			    //back wall
-{x: -1, y: 23, z: 1.8}, {x: 1, y: 23, z: 1.8}, {x: 0, y: 23, z: 0.3},									//triangle on back wall
-{x: -10, y: 50, z: 0}, {x: -10, y: 60, z: 0}, {x: 10, y: 60, z: 0}, {x: 10, y: 50, z: 0}
-]
+coordinates = []
 
-faceVerticies = [
-{v: [29,30,31,32], c: 5},
-{v: [22,23,24,25], c: 0}, 					//back wall
-{v: [26,27,28], c: 1},						//triangle on back wall
-{v: [18,19,20,21], c: 2},					//floor
-{v: [2,3,4,5], c: 3}, {v: [0,1,2,3], c: 3},																											//dad chair
-{v: [6,7,8,9], c: 4}, {v: [8,9,13,12], c: 4}, {v: [7,8,12,11], c: 4}, {v: [6,9,13,10], c: 4}, {v: [10,11,12,13], c: 4}, {v: [6,7,11,10], c: 4},		//tall collumn
-{v: [14,15,16,17], c: 5}					//square on floor
-]
+stlLines = stl.split("\n")
 
+for (l = 0; l < stlLines.length; l ++){
+	blocks = stlLines[l].trim().split(" ")
+	if (blocks[0] != "vertex") continue
+	blocks.splice(0,1)
+	coordinates.push(arrToObj(blocks.map(i => parseFloat(i))))
+}
+	
+	
+
+faceVerticies = []
+
+for (c = 0; c < coordinates.length; c += 3){
+	faceVerticies.push({v: [c, c + 1, c + 2], c: 7})
+}
+
+/*
 for (r = 0; r <= 100; r += 2){
 	coordinates.push({x: -50 + r, y: 10, z: 0})
 	coordinates.push({x: -50 + r, y: 110, z: 0})
@@ -84,10 +85,10 @@ for (r = 0; r <= 100; r += 2){
 	coordinates.push({x: 50, y: 10 + r, z: 0})
 	faceVerticies.unshift({v: [coordinates.length -1, coordinates.length-2], c: 6 })
 }
-
+*/
 
 cam = {x: 0, y: 0, z: 3, pitch: 0, yaw: 0, roll: 0}		//coordinates of the camera
-fov = 50 						//field of view in degrees
+fov = 80 						//field of view in degrees
 
 pixelsPerDegree = width / fov					//the amount of pixels that one degree spreads over
 walkStep = 2
@@ -101,8 +102,28 @@ function takeStep(yaw){
 	cam.y = walkStep * Math.cos(radFromDeg(yaw)) + cam.y
 }
 
+distanceBetween = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2) + Math.pow(co2.z - co1.z , 2))
+
+function centroidFace(face){	
+	face = face.map(co => coordinates[co])
+	avgCo = {x: 0, y: 0, z: 0}
+	for (c = 0; c < face.length; c++){
+		cord = face[c]
+		avgCo.x += cord.x
+		avgCo.y += cord.y
+		avgCo.z += cord.z
+	}
+	return {x: avgCo.x / face.length, y: avgCo.y / face.length, z: avgCo.z / face.length}
+}
+
+function sortFaceVerticies(a, b){
+	if ( distanceBetween(cam, centroidFace(a.v)) >  distanceBetween(cam, centroidFace(b.v)) ) return -1
+	return 1
+}
+
 
 function drawPoints(points, canvas){	//acctually does the drawing of the coordinates from the canvas coordinates fills in with reference to the shape index array
+	faceVerticies = faceVerticies.sort(sortFaceVerticies)
 	if (canvas == 1){
 	for (s = 0; s < faceVerticies.length; s++){
 		shape = faceVerticies[s].v
