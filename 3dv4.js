@@ -268,8 +268,8 @@ document.addEventListener("keydown", keyPress)
 
 function keyPress(event){
 	key = event.keyCode
-	if (key == 88) cam.z -= 0.5				//x	fly down
-	if (key == 90) cam.z += 0.5				//z fly up
+	if (key == 88) cam.z -= walkStep		//x	fly down
+	if (key == 90) cam.z += walkStep		//z fly up
 	if (key == 87) takeStep(cam.yaw)		//w	walk forward
 	if (key == 83) takeStep(cam.yaw + 180)	//s walk backwards
 	if (key == 65) takeStep(cam.yaw - 90)	//a walk left
@@ -291,8 +291,6 @@ var f = (a) => ({x:a[0], y:a[1], z:a[2]})
 
 coordinates = stl.match(/vertex\s+(.*)/gm).map(l => f(l.match(/[-]*\d+/g).map(i => parseFloat(i))))
 
-console.log(coordinates)
-
 faceVerticies = []
 
 for (c = 0; c < coordinates.length; c += 3){
@@ -313,7 +311,7 @@ for (r = 0; r <= 100; r += 2){
 }
 */
 
-cam = {x: -20, y: -20, z: 20, pitch: 0, yaw: 0, roll: 0}		//coordinates of the camera
+cam = {x: 0, y: -50, z: 20, pitch: 0, yaw: 0, roll: 0}		//coordinates of the camera
 fov = 50 						//field of view in degrees
 
 pixelsPerDegree = width / fov					//the amount of pixels that one degree spreads over
@@ -391,13 +389,13 @@ function angleFromCoord(coord){									   //takes a coordinate and returns the 
 	return {yaw: yaw, pitch: pitch}
 }
 
-	
+mapWidth = width / 5
+mapHeight = height / 5
+border = 0.6
+gap = 5
+arrowLength = 110
+
 function renderMiniMap(){										//renders the minimap
-	mapWidth = width / 5
-	mapHeight = height / 5
-	border = 0.6
-	gap = 5
-	arrowLength = 110
 	
 	ctx.fillStyle = "black"
 	ctx.fillRect(width - gap, gap, -mapWidth + border * -2, mapHeight + border * 2)
@@ -406,7 +404,7 @@ function renderMiniMap(){										//renders the minimap
 	
 	centerX = width - border - gap - mapWidth / 2
 	centerY = border + gap + mapHeight / 2
-	scale = 2
+	scale = 0.5
 	pointLower = 70
 	
 	
@@ -427,8 +425,8 @@ function renderMiniMap(){										//renders the minimap
 		ctx.fill()
 	}
 	
-	drawLine(centerX - 5, centerY + pointLower, centerX + 5, centerY + pointLower)
-	drawLine(centerX, centerY - 5 + pointLower, centerX, centerY + 5 + pointLower)
+	drawLine(centerX - mapWidth / 2, centerY + pointLower, centerX + mapWidth / 2, centerY + pointLower)
+	drawLine(centerX, centerY - (mapHeight / 2 + pointLower) + pointLower, centerX, centerY + mapHeight / 2)
 	
 	ctx.fillStyle = "#00ffed"
 	ctx.fillRect(centerX + cam.x * scale -2 , centerY + cam.y * scale * -1 - 2 + pointLower, 4, 4)
@@ -453,15 +451,43 @@ function moduloCamViewpoint(){
 	while (cam.pitch > 180) cam.pitch -= 360
 }
 
+fontSize = 15
+
+function renderHUD(){
+	ctx.font = fontSize.toString() + "px " + "aerial"
+	ctx.fillStyle = "red"
+	lines = [
+	["Camera:", ""],
+	["x:", padLeft(cam.x)],
+	["y:", padLeft(cam.y)],
+	["z:", padLeft(cam.z)],
+	["yaw:", padLeft(cam.yaw)],
+	["pitch:", padLeft(cam.pitch)],
+	["roll:", padLeft(cam.roll)],
+	]
+	
+	tableWidth = 70
+	
+	for (l = 0; l < lines.length; l++){
+		ctx.textAlign = "left"
+		ctx.fillText(lines[l][0], width - (mapWidth + 2 * border + gap), (mapHeight + 2 * border + gap) + l * fontSize + fontSize)
+		ctx.textAlign = "right"
+		ctx.fillText(lines[l][1], width - (mapWidth + 2 * border + gap) + tableWidth, (mapHeight + 2 * border + gap) + l * fontSize + fontSize)
+	}
+}
+
+
 function renderWorld(){											//draws the world from given cam perspective and object coodinates
 	document.getElementById("data").innerText = "Camera \xa0 x: " + padLeft(cam.x) + ", y: " + padLeft(cam.y) + ", z: " + padLeft(cam.z) + ", yaw: " + padLeft(cam.yaw) +  ", pitch: " + padLeft(cam.pitch) + ", roll: " + padLeft(cam.roll)
-
+	
+	
 	moduloCamViewpoint()
 	
 	clearScreen()
 	renderObjects()
 	renderCrosshairs()
 	renderMiniMap()
+	renderHUD()
 }
 
 renderWorld()
@@ -491,6 +517,10 @@ function sortFaceVerticies(a, b){								//orderes face verticies a and b
 	
 function padLeft(num){											//returns string of number padded from left to make a 5 charachter string
 	return ("\xa0\xa0\xa0\xa0" + parseFloat(num.toFixed(0))).slice(-5)
+}
+
+function padRight(string, length){									//pads a string to a 7 charachter string
+	return (string + "\xa0\xa0\xa0\xa0\xa0\xa0").slice(0,5)
 }
 
 function drawLine(xStart, yStart, xFin, yFin){					//draws a line on the canvas
