@@ -1,261 +1,3 @@
-stl = `
-solid OpenSCAD_Model
-  facet normal -1 0 0
-    outer loop
-      vertex 0 0 0
-      vertex 0 10 10
-      vertex 0 10 0
-    endloop
-  endfacet
-  facet normal -1 -0 0
-    outer loop
-      vertex 0 10 10
-      vertex 0 0 0
-      vertex 0 0 10
-    endloop
-  endfacet
-  facet normal -0 0 1
-    outer loop
-      vertex 0 10 10
-      vertex 10 0 10
-      vertex 10 10 10
-    endloop
-  endfacet
-  facet normal 0 0 1
-    outer loop
-      vertex 10 0 10
-      vertex 0 10 10
-      vertex 0 0 10
-    endloop
-  endfacet
-  facet normal 1 -0 0
-    outer loop
-      vertex 10 0 10
-      vertex 10 10 0
-      vertex 10 10 10
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex 10 10 0
-      vertex 10 0 10
-      vertex 10 0 0
-    endloop
-  endfacet
-  facet normal 0 1 -0
-    outer loop
-      vertex 10 10 0
-      vertex 0 10 10
-      vertex 10 10 10
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex 0 10 10
-      vertex 10 10 0
-      vertex 0 10 0
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 0 0 0
-      vertex 10 10 0
-      vertex 10 0 0
-    endloop
-  endfacet
-  facet normal -0 0 -1
-    outer loop
-      vertex 10 10 0
-      vertex 0 0 0
-      vertex 0 10 0
-    endloop
-  endfacet
-  facet normal 0 -1 0
-    outer loop
-      vertex 0 0 0
-      vertex 10 0 10
-      vertex 0 0 10
-    endloop
-  endfacet
-  facet normal 0 -1 -0
-    outer loop
-      vertex 10 0 10
-      vertex 0 0 0
-      vertex 10 0 0
-    endloop
-  endfacet
-  facet normal -1 0 0
-    outer loop
-      vertex 50 0 0
-      vertex 50 10 10
-      vertex 50 10 0
-    endloop
-  endfacet
-  facet normal -1 -0 0
-    outer loop
-      vertex 50 10 10
-      vertex 50 0 0
-      vertex 50 0 10
-    endloop
-  endfacet
-  facet normal -0 0 1
-    outer loop
-      vertex 50 10 10
-      vertex 60 0 10
-      vertex 60 10 10
-    endloop
-  endfacet
-  facet normal 0 0 1
-    outer loop
-      vertex 60 0 10
-      vertex 50 10 10
-      vertex 50 0 10
-    endloop
-  endfacet
-  facet normal 1 -0 0
-    outer loop
-      vertex 60 0 10
-      vertex 60 10 0
-      vertex 60 10 10
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex 60 10 0
-      vertex 60 0 10
-      vertex 60 0 0
-    endloop
-  endfacet
-  facet normal 0 1 -0
-    outer loop
-      vertex 60 10 0
-      vertex 50 10 10
-      vertex 60 10 10
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex 50 10 10
-      vertex 60 10 0
-      vertex 50 10 0
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 50 0 0
-      vertex 60 10 0
-      vertex 60 0 0
-    endloop
-  endfacet
-  facet normal -0 0 -1
-    outer loop
-      vertex 60 10 0
-      vertex 50 0 0
-      vertex 50 10 0
-    endloop
-  endfacet
-  facet normal 0 -1 0
-    outer loop
-      vertex 50 0 0
-      vertex 60 0 10
-      vertex 50 0 10
-    endloop
-  endfacet
-  facet normal 0 -1 -0
-    outer loop
-      vertex 60 0 10
-      vertex 50 0 0
-      vertex 60 0 0
-    endloop
-  endfacet
-  facet normal -1 0 0
-    outer loop
-      vertex 25 0 0
-      vertex 25 90 10
-      vertex 25 90 0
-    endloop
-  endfacet
-  facet normal -1 -0 0
-    outer loop
-      vertex 25 90 10
-      vertex 25 0 0
-      vertex 25 0 10
-    endloop
-  endfacet
-  facet normal -0 0 1
-    outer loop
-      vertex 25 90 10
-      vertex 35 0 10
-      vertex 35 90 10
-    endloop
-  endfacet
-  facet normal 0 0 1
-    outer loop
-      vertex 35 0 10
-      vertex 25 90 10
-      vertex 25 0 10
-    endloop
-  endfacet
-  facet normal 1 -0 0
-    outer loop
-      vertex 35 0 10
-      vertex 35 90 0
-      vertex 35 90 10
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex 35 90 0
-      vertex 35 0 10
-      vertex 35 0 0
-    endloop
-  endfacet
-  facet normal 0 1 -0
-    outer loop
-      vertex 35 90 0
-      vertex 25 90 10
-      vertex 35 90 10
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex 25 90 10
-      vertex 35 90 0
-      vertex 25 90 0
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 25 0 0
-      vertex 35 90 0
-      vertex 35 0 0
-    endloop
-  endfacet
-  facet normal -0 0 -1
-    outer loop
-      vertex 35 90 0
-      vertex 25 0 0
-      vertex 25 90 0
-    endloop
-  endfacet
-  facet normal 0 -1 0
-    outer loop
-      vertex 25 0 0
-      vertex 35 0 10
-      vertex 25 0 10
-    endloop
-  endfacet
-  facet normal 0 -1 -0
-    outer loop
-      vertex 35 0 10
-      vertex 25 0 0
-      vertex 35 0 0
-    endloop
-  endfacet
-endsolid OpenSCAD_Model
-
-`
-
 cnvs = document.getElementById("cnvs")
 ctx = cnvs.getContext("2d")
 
@@ -280,16 +22,29 @@ function keyPress(event){
 	if (key == 70) cam.pitch -= lookStep   			//f	//look down
 	if (key == 89) cam.roll  += lookStep			//y //roll left
 	if (key == 84) cam.roll  -= lookStep			//t //roll right
+	if (key == 187) fov += 10				//+ increase fov
+	if (key == 189) fov -= 10				//- reduce fov
 	
 	renderWorld()
 }
 
+var arrToObj = (a) => ({x:a[0], y:a[1], z:a[2]})
+//coordinates = stl.match(/vertex\s+(.*)/gm).map(l => f(l.match(/[-]*\d+/g).map(i => parseFloat(i))))
 
 colors = ["#F19292", "yellow", "teal", "green", "cyan", "orange", "black", "#c6b9cc"]
 
-var f = (a) => ({x:a[0], y:a[1], z:a[2]})
+coordinates = []
 
-coordinates = stl.match(/vertex\s+(.*)/gm).map(l => f(l.match(/[-]*\d+/g).map(i => parseFloat(i))))
+stlLines = stl.split("\n")
+
+for (l = 0; l < stlLines.length; l ++){
+	blocks = stlLines[l].trim().split(" ")
+	if (blocks[0] != "vertex") continue
+	blocks.splice(0,1)
+	coordinates.push(arrToObj(blocks.map(i => parseFloat(i))))
+}
+	
+	
 
 faceVerticies = []
 
@@ -311,10 +66,7 @@ for (r = 0; r <= 100; r += 2){
 }
 */
 
-cam = {x: 0, y: -50, z: 20, pitch: 0, yaw: 0, roll: 0}		//coordinates of the camera
-fov = 50 						//field of view in degrees
-
-pixelsPerDegree = width / fov					//the amount of pixels that one degree spreads over
+cam = {x: 0, y: -50, z: 20, pitch: 0, yaw: 0, roll: 0, fov: 80}		//camera
 walkStep = 5
 lookStep = 5
 wireframe = false
@@ -345,16 +97,16 @@ function sortFaceVerticies(a, b){
 }
 
 function drawPoints(canvasCoordinates){	//acctually does the drawing of the coordinates from the canvas coordinates fills in with reference to the shape index array
-	sortedFaces = faceVerticies.sort(sortFaceVerticies)
+	if (!wireframe) sortedFaces = faceVerticies.sort(sortFaceVerticies)
+	sortedFaces = faceVerticies
 	for (s = 0; s < sortedFaces.length; s++){
 		shape = sortedFaces[s].v
-		ctx.strokeStyle = "black"
 		ctx.beginPath(canvasCoordinates[shape[0]].x, canvasCoordinates[shape[0]].y)
 		for (p = 1; p < shape.length; p++){
 			ctx.lineTo(canvasCoordinates[shape[p]].x, canvasCoordinates[shape[p]].y)
-			ctx.stroke()
 		}
 		ctx.lineTo(canvasCoordinates[shape[0]].x, canvasCoordinates[shape[0]].y)
+		ctx.strokeStyle = "black"
 		ctx.stroke()
 		ctx.closePath()
 		if (!wireframe){
@@ -364,7 +116,8 @@ function drawPoints(canvasCoordinates){	//acctually does the drawing of the coor
 	}
 }
 
-function renderObjects(){				//draws the 3d objects from their coordinates and cam position onto canvas in 2d	
+function renderObjects(){				//draws the 3d objects from their coordinates and cam position onto canvas in 2d
+
 
 	worldTransate = (x,y,z) => (o => ({x: o.x + x, y: o.y + y, z: o.z + z}))
 
@@ -377,7 +130,7 @@ function renderObjects(){				//draws the 3d objects from their coordinates and c
 
 	coordinateAngles = transformedCoords.map(angleFromCoord)
 	
-	canvasCoordinates = coordinateAngles.map(o => ( { x: width / 2 + (o.yaw * pixelsPerDegree), y: height / 2 - (o.pitch * pixelsPerDegree) } ))
+	canvasCoordinates = coordinateAngles.map(o => ( { x: width / 2 + (o.yaw * (width / cam.fov) ), y: height / 2 - (o.pitch * (width / cam.fov) ) } ))
 	
 	drawPoints(canvasCoordinates)
 }
@@ -435,8 +188,8 @@ function renderMiniMap(){										//renders the minimap
 	
 	ctx.fillStyle = "rgbA(107,255,125,0.5)"
 	ctx.beginPath(centerX + cam.x * scale, centerY + cam.y * scale * -1 + pointLower)
-	ctx.lineTo(centerX + (Math.sin(radFromDeg(cam.yaw - 0.5 * fov)) * arrowLength) + cam.x * scale, centerY - (Math.cos(radFromDeg(cam.yaw - 0.5 * fov)) * arrowLength) + cam.y * scale * -1 + pointLower)
-	ctx.arc(centerX + cam.x * scale, centerY + cam.y * scale * -1 + pointLower, arrowLength, radFromDeg(-90 - fov * 0.5 + cam.yaw), radFromDeg(-90 + fov * 0.5 + cam.yaw) )
+	ctx.lineTo(centerX + (Math.sin(radFromDeg(cam.yaw - 0.5 * cam.fov)) * arrowLength) + cam.x * scale, centerY - (Math.cos(radFromDeg(cam.yaw - 0.5 * cam.fov)) * arrowLength) + cam.y * scale * -1 + pointLower)
+	ctx.arc(centerX + cam.x * scale, centerY + cam.y * scale * -1 + pointLower, arrowLength, radFromDeg(-90 - cam.fov * 0.5 + cam.yaw), radFromDeg(-90 + cam.fov * 0.5 + cam.yaw) )
 	//ctx.lineTo(centerX + (Math.sin(radFromDeg(cam.yaw + 0.5 * fov)) * arrowLength) + cam.x, centerY - (Math.cos(radFromDeg(cam.yaw + 0.5 * fov)) * arrowLength) + cam.y * -1 )
 	ctx.lineTo(centerX + cam.x * scale, centerY + cam.y * scale * -1 + pointLower)
 	ctx.closePath()
@@ -456,7 +209,7 @@ fontSize = 15
 function renderHUD(){
 	ctx.font = fontSize.toString() + "px " + "aerial"
 	ctx.fillStyle = "red"
-	lines = [
+	rows = [
 	["Camera:", ""],
 	["x:", padLeft(cam.x)],
 	["y:", padLeft(cam.y)],
@@ -464,15 +217,16 @@ function renderHUD(){
 	["yaw:", padLeft(cam.yaw)],
 	["pitch:", padLeft(cam.pitch)],
 	["roll:", padLeft(cam.roll)],
+	["fov:", padLeft(cam.fov)],
 	]
 	
 	tableWidth = 70
 	
-	for (l = 0; l < lines.length; l++){
+	for (r = 0; r < rows.length; r++){
 		ctx.textAlign = "left"
-		ctx.fillText(lines[l][0], width - (mapWidth + 2 * border + gap), (mapHeight + 2 * border + gap) + l * fontSize + fontSize)
+		ctx.fillText(rows[r][0], width - (mapWidth + 2 * border + gap), (mapHeight + 2 * border + gap) + r * fontSize + fontSize)
 		ctx.textAlign = "right"
-		ctx.fillText(lines[l][1], width - (mapWidth + 2 * border + gap) + tableWidth, (mapHeight + 2 * border + gap) + l * fontSize + fontSize)
+		ctx.fillText(rows[r][1], width - (mapWidth + 2 * border + gap) + tableWidth, (mapHeight + 2 * border + gap) + r * fontSize + fontSize)
 	}
 }
 
