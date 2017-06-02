@@ -173,7 +173,7 @@ function renderObjects(){		//draws the 3d objects from their coordinates and cam
 	//rightCoords = coordinates.map(o => ({x: o.x + eyeDif, y: o.y, z: o.z}) )
 	cam.x += eyeDif
 	
-	transformedCoords = rightCoords.map(worldTransate(-cam.x, - cam.y, -cam.z)).map( zWorldRotate(radFromDeg(cam.yaw))).map(xWorldRotate(radFromDeg(cam.pitch))).map(worldTransate(cam.x,cam.y,cam.z))
+	transformedCoords = coordinates.map(worldTransate(-cam.x, - cam.y, -cam.z)).map( zWorldRotate(radFromDeg(cam.yaw))).map(xWorldRotate(radFromDeg(cam.pitch))).map(worldTransate(cam.x,cam.y,cam.z))
 	
 	coordinateAngles = transformedCoords.map(angleFromCoord)
 	
@@ -185,7 +185,7 @@ function renderObjects(){		//draws the 3d objects from their coordinates and cam
 	cam.x -= 2 * eyeDif
 	//leftCoords = coordinates.map(o => ({x: o.x - eyeDif, y: o.y, z: o.z}) )
 	
-	transformedCoords = leftCoords.map(worldTransate(-cam.x, - cam.y, -cam.z)).map( zWorldRotate(radFromDeg(cam.yaw))).map(xWorldRotate(radFromDeg(cam.pitch))).map(worldTransate(cam.x,cam.y,cam.z))
+	transformedCoords = coordinates.map(worldTransate(-cam.x, - cam.y, -cam.z)).map( zWorldRotate(radFromDeg(cam.yaw))).map(xWorldRotate(radFromDeg(cam.pitch))).map(worldTransate(cam.x,cam.y,cam.z))
 	
 	coordinateAngles = transformedCoords.map(angleFromCoord)
 	
