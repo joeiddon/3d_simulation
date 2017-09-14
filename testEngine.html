@@ -1,0 +1,69 @@
+<html>
+<head>
+	<script src="thirdEngine.js"></script>
+	
+	<style>
+	body {
+		margin: 0;
+		padding: 0;
+	}
+	#cnvs {
+		background-color: #FCFCDA;
+	}	
+	</style>
+</head>
+
+<body>
+<canvas id="cnvs"></canvas>
+
+<script>
+var cnvs = document.getElementById("cnvs")
+cnvs.width = innerWidth
+cnvs.height = innerHeight
+
+
+var cam = {x: 0, y: 0, z: 0, yaw: 0, pitch: 0, roll: 0, fov: 90, step: 1, lookStep: 10}
+
+var world = [
+	{verts: [{x: -5,y: 10,z: 0}, {x: 5,y: 10,z: 0}, {x: 0,y: 10,z: 10}], col: "blue"}
+]
+
+render(world, cam, cnvs, false)
+
+window.addEventListener("keydown", function (event){
+	var key = event.keyCode
+
+	if (key == 67) restart()				//c for restart	
+	if (key == 88) cam.z -= cam.step					//x	fly down
+	if (key == 90) cam.z += cam.step					//z fly up
+	if (key == 87) takeStep(cam.yaw)					//w	walk forward
+	if (key == 83) takeStep(cam.yaw + 180)				//s walk backwards
+	if (key == 65) takeStep(cam.yaw - 90)				//a walk left
+	if (key == 68) takeStep(cam.yaw + 90)				//d walk right	
+	if (key == 69) cam.yaw   += cam.lookStep			//e	look left
+	if (key == 81) cam.yaw   -= cam.lookStep  			//q	look right
+	if (key == 82) cam.pitch += cam.lookStep			//r	look up
+	if (key == 70) cam.pitch -= cam.lookStep   			//f	look down
+	if (key == 89) cam.roll  += cam.lookStep			//y roll left
+	if (key == 84) cam.roll  -= cam.lookStep			//t roll right
+	//if (key == 187) //+
+	//if (key == 189) //-
+	render(world, cam, cnvs, false)
+})
+
+function takeStep(yaw){
+	cam.x = cam.step * Math.sin(toRad(yaw)) + cam.x
+	cam.y = cam.step * Math.cos(toRad(yaw)) + cam.y
+}
+
+function drawCross(x, y, l){									//draws a cross on canvas in relation to the midpoint
+	drawLine(x + l, y, x - l, y)
+	drawLine(x, y + l, x, y - l)
+}
+
+
+</script>
+
+
+</body>
+</head>
