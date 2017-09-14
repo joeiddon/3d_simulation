@@ -8,7 +8,8 @@
 		padding: 0;
 	}
 	#cnvs {
-		background-color: #FCFCDA;
+		background-color: black; 
+		<!-- #FCFCDA; -->
 	}	
 	</style>
 </head>
@@ -18,8 +19,6 @@
 
 <script>
 
-
-
 var cnvs = document.getElementById("cnvs")
 var ctx = cnvs.getContext("2d")
 cnvs.width = innerWidth
@@ -27,10 +26,12 @@ cnvs.height = innerHeight
 
 var randCol = () => "hsl(" + (1+Math.random()*359) + ",50%,60%)"
 
-
+var interval = 0
 var gridSize = 20
 var gridWidth = 2
-var cam = {x: (gridSize/2) * gridWidth, y: -2, z: 2, yaw: 0, pitch: 0, roll: 0, fov: 90, step: 0.1, lookStep: 10}
+var spikeHeight = 0.8
+var wireframe = false
+var cam = {x: (gridSize/2) * gridWidth, y: -2, z: 2, yaw: 0, pitch: 0, roll: 0, fov: 80, step: 0.2, lookStep: 10}
 
 function restart(){
 
@@ -38,12 +39,12 @@ function restart(){
 //	{verts: [{x: -5,y: 10,z: 0}, {x: 5,y: 10,z: 0}, {x: 0,y: 10,z: 10}], col: "blue"}
 //]
 world = []
-var heights = []
+heights = []
 for (var r = 0; r < gridSize + 1; r++){
 	var row = []
 	for (var c = 0; c < gridSize + 1; c++){
 		if (r == 0 || r == gridSize || c == 0 || c == gridSize) row.push(0)
-		else row.push(Math.random())
+		else row.push(Math.random() * spikeHeight)
 	}
 	heights.push(row)
 }
@@ -60,7 +61,7 @@ update()
 restart()
 
 function update(){
-	render(world, cam, cnvs, true)
+	render(world, cam, cnvs, wireframe)
 	drawCross(cnvs.width/2, cnvs.height/2, 20)
 }
 
@@ -80,10 +81,34 @@ window.addEventListener("keydown", function (event){
 	if (key == 70) cam.pitch -= cam.lookStep   			//f	look down
 	if (key == 89) cam.roll  += cam.lookStep			//y roll left
 	if (key == 84) cam.roll  -= cam.lookStep			//t roll right
+	if (key == 66) toggleScroll()						//b toggle auto scroll
 	//if (key == 187) //+
 	//if (key == 189) //-
 	update()
 })
+
+function toggleScroll(){
+	if (interval){
+		clearInterval(interval)
+		interval = 0
+	} else {
+		interval = setInterval(function(){
+		heights.shift(1)
+		heights.push([])
+		for (var c = 0; c < gridSize + 1; c++){
+			heights[heights.length-1].push(Math.random() * spikeHeight)
+		}
+		world = []
+		for (var r = 0; r < gridSize; r++){
+			for (var c = 0; c < gridSize; c++){
+				world.push({verts: [{x: r * gridWidth, y: c * gridWidth, z: heights[c][r]}, {x: r * gridWidth +gridWidth, y: c * gridWidth, z: heights[c][r+1]}, {x: r * gridWidth + gridWidth, y: c * gridWidth +gridWidth, z:heights[c+1][r+1]}, {x: r * gridWidth, y: c * gridWidth + gridWidth, z: heights[c+1][r]}], col: "purple"})
+			}
+		}
+		update()
+		}, 150)
+	}
+}
+
 
 function takeStep(yaw){
 	cam.x = cam.step * Math.sin(toRad(yaw)) + cam.x
