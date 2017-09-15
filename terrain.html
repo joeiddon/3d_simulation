@@ -55,7 +55,15 @@ for (var r = 0; r < gridSize + 1; r++){
 
 for (var r = 0; r < gridSize; r++){
 	for (var c = 0; c < gridSize; c++){
-		world.push({verts: [{x: r * gridWidth, y: c * gridWidth, z: heights[c][r]}, {x: r * gridWidth +gridWidth, y: c * gridWidth, z: heights[c][r+1]}, {x: r * gridWidth + gridWidth, y: c * gridWidth +gridWidth, z:heights[c+1][r+1]}, {x: r * gridWidth, y: c * gridWidth + gridWidth, z: heights[c+1][r]}], col: randCol()})
+		world.push({verts: [{x: r * gridWidth, y: c * gridWidth, z: heights[c][r]},
+				    {x: r * gridWidth + gridWidth, y: c * gridWidth, z: heights[c][r+1]}, 
+				    {x: r * gridWidth, y: c * gridWidth + gridWidth, z: heights[c+1][r]}],
+			    	    col: randCol()},
+			   {verts: [{x: r * gridWidth + gridWidth, y: c * gridWidth, z: heights[c][r+1]}, 
+				    {x: r * gridWidth + gridWidth, y: c * gridWidth + gridWidth, z:heights[c+1][r+1]}, 
+				    {x: r * gridWidth, y: c * gridWidth + gridWidth, z: heights[c+1][r]}],
+			    	    col: randCol()},
+			  )
 	}
 }
 
