@@ -27,7 +27,7 @@ function drawFace(verts, col, ctx, wireframe){
 		ctx.lineTo(verts[v].x, verts[v].y)
 	}
 	ctx.closePath()
-	ctx.strokeStyle = "black"
+	ctx.strokeStyle = wireframe ? "white" : "black"
 	ctx.stroke()
 	if (!wireframe){
 		ctx.fillStyle = col
