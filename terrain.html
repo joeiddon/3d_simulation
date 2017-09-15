@@ -27,7 +27,7 @@ function fitCanvas(){
 }
 fitCanvas()
 	
-window.addEventListener("resize", fitCanvas)
+window.addEventListener("resize", ()=>{fitCanvas();restart();})
 var randCol = () => "hsl(" + (1+Math.random()*359) + ",50%,60%)"
 
 var interval = 0
