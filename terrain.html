@@ -18,12 +18,16 @@
 <canvas id="cnvs"></canvas>
 
 <script>
-
 var cnvs = document.getElementById("cnvs")
 var ctx = cnvs.getContext("2d")
-cnvs.width = innerWidth
-cnvs.height = innerHeight
 
+function fitCanvas(){
+	cnvs.width = innerWidth
+	cnvs.height = innerHeight
+}
+fitCanvas()
+	
+window.addEventListener("resize", fitCanvas)
 var randCol = () => "hsl(" + (1+Math.random()*359) + ",50%,60%)"
 
 var interval = 0
