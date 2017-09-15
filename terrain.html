@@ -47,7 +47,7 @@ heights = []
 for (var r = 0; r < gridSize + 1; r++){
 	var row = []
 	for (var c = 0; c < gridSize + 1; c++){
-		if (r == 0 || r == gridSize || c == 0 || c == gridSize) row.push(0)
+		if (r < 2 || r > gridSize - 2 || c < 2 || c > gridSize - 2) row.push(0)
 		else row.push(Math.random() * spikeHeight)
 	}
 	heights.push(row)
