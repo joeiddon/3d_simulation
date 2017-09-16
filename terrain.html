@@ -32,11 +32,11 @@ var randCol = () => "hsl(" + (1+Math.random()*359) + ",50%,60%)"
 
 var interval = 0
 var gridSize = 20
-var cells = 4
-var gridWidth = 1.5
-var hillHeight = 6
-var wireframe = true
-var cam = {x: (gridSize/2) * gridWidth, y: -12, z: hillHeight + 1, yaw: 0, pitch: 0, roll: 0, fov: 80, step: 0.5, lookStep: 10}
+var cells = 2
+var gridWidth = 1
+var hillHeight = 5
+var wireframe = false
+var cam = {x: (gridSize/2) * gridWidth, y: -12, z: hillHeight * 1.5, yaw: 0, pitch: 0, roll: 0, fov: 80, step: 0.5, lookStep: 10}
 
 function restart(){
 
@@ -85,21 +85,21 @@ function update(){
 window.addEventListener("keydown", function (event){
 	var key = event.keyCode
 
-	if (key == 67) restart()				//c for restart	
-	if (key == 88) cam.z -= cam.step					//x	fly down
-	if (key == 90) cam.z += cam.step					//z fly up
-	if (key == 87) takeStep(cam.yaw)					//w	walk forward
-	if (key == 83) takeStep(cam.yaw + 180)				//s walk backwards
-	if (key == 65) takeStep(cam.yaw - 90)				//a walk left
-	if (key == 68) takeStep(cam.yaw + 90)				//d walk right	
-	if (key == 69) cam.yaw   += cam.lookStep			//e	look left
-	if (key == 81) cam.yaw   -= cam.lookStep  			//q	look right
-	if (key == 82) cam.pitch += cam.lookStep			//r	look up
-	if (key == 70) cam.pitch -= cam.lookStep   			//f	look down
-	if (key == 89) cam.roll  += cam.lookStep			//y roll left
-	if (key == 84) cam.roll  -= cam.lookStep			//t roll right
-	if (key == 66) toggleScroll()						//b toggle auto scroll
-	if (key == 71) wireframe = !wireframe				//g toggle wireframe
+	if (key == 67) restart()								//c for restart	
+	if (key == 88) cam.z -= cam.step						//x	fly down
+	if (key == 90) cam.z += cam.step						//z fly up
+	if (key == 87) takeStep(cam.yaw)						//w	walk forward
+	if (key == 83) takeStep(cam.yaw + 180)					//s walk backwards
+	if (key == 65) takeStep(cam.yaw - 90)					//a walk left
+	if (key == 68) takeStep(cam.yaw + 90)					//d walk right	
+	if (key == 69) cam.yaw   = (cam.yaw+cam.lookStep)%360	//e look left
+	if (key == 81) cam.yaw   = (cam.yaw-cam.lookStep)%360  	//q	look right
+	if (key == 82) cam.pitch = (cam.pitch+cam.lookStep)%360	//r	look up
+	if (key == 70) cam.pitch = (cam.pitch-cam.lookStep)%360 //f	look down
+	if (key == 89) cam.roll  = (cam.roll+cam.lookStep)%360	//y roll left
+	if (key == 84) cam.roll  = (cam.roll-cam.lookStep)%360  //t roll right
+	if (key == 66) toggleScroll()							//b toggle auto scroll
+	if (key == 71) wireframe = !wireframe					//g toggle wireframe
 	//if (key == 187) //+
 	//if (key == 189) //-
 	update()
@@ -109,7 +109,6 @@ function toggleScroll(){
 	if (interval){
 		clearInterval(interval)
 		interval = 0
-		wireframe = false
 	} else {
 		interval = setInterval(function(){
 		flying += 1
@@ -124,7 +123,6 @@ function toggleScroll(){
 				world.push({verts: [{x: r * gridWidth, y: c * gridWidth, z: heights[c][r]}, {x: r * gridWidth +gridWidth, y: c * gridWidth, z: heights[c][r+1]}, {x: r * gridWidth + gridWidth, y: c * gridWidth +gridWidth, z:heights[c+1][r+1]}, {x: r * gridWidth, y: c * gridWidth + gridWidth, z: heights[c+1][r]}], col: "#55ddcc"})
 			}
 		}
-		wireframe = true
 		update()
 		}, 150)
 	}
