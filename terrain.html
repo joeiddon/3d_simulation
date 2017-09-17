@@ -15,12 +15,21 @@
 		<!-- #FCFCDA; -->
 	}	
 	#varsContainer{
+		padding: 10px;
 		width: 200px;
 	}
 	p {
-		margin: 0;
 		text-align: center;
+	}
+	p, pre {
+		font-family: monospace;
+		margin: 0;
 		color: white;
+	}
+	#cam {
+		bottom: 0;
+		position: fixed;
+		text-align: left;
 	}
 	input {
 		margin: 0;
@@ -35,6 +44,7 @@
 
 <body>
 <canvas id="cnvs"></canvas>
+<p id="cam"></p>
 <div id="varsContainer">
 <p id="cellsVal">hills: 2</p>
 <input min="0" value="2" max="10" type="range" oninput="document.getElementById('cellsVal').innerText='hills: '+this.value;cells=parseInt(this.value); restart();"></input>
@@ -44,6 +54,16 @@
 <input min="1" value="20" max="100" type="range" oninput="document.getElementById('lengthVal').innerText='length: '+this.value;grid.length=parseInt(this.value); restart();"></input>
 <p id="heightVal">hill height: 4</p>
 <input min="1" value="4" max="25" type="range" oninput="document.getElementById('heightVal').innerText='hill height: '+this.value;hillHeight=parseInt(this.value); restart();"></input>
+<pre>
+controls:
+wasd  |    movement
+zx    | fly up/down 
+eq    |         yaw
+rf    |       pitch
+yt    |        roll
+g	  |   wireframe
+b     |      scroll
+</pre>
 </div>
 
 
@@ -110,6 +130,7 @@ restart()
 toggleScroll()
 
 function update(){
+	document.getElementById("cam").innerText = "x: "+cam.x+" y: "+cam.y+" z: "+cam.z+" yaw: "+cam.yaw+" pitch: "+cam.pitch+" roll: "+cam.roll
 	render(world, cam, cnvs, wireframe)
 	drawCross(cnvs.width/2, cnvs.height/2, 20)
 }
