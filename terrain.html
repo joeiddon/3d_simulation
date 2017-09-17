@@ -9,13 +9,43 @@
 	}
 	#cnvs {
 		background-color: black; 
+		position: fixed;
+		float: top;
+		z-index: -1;
 		<!-- #FCFCDA; -->
 	}	
+	#varsContainer{
+		width: 200px;
+	}
+	p {
+		margin: 0;
+		text-align: center;
+		color: white;
+	}
+	input {
+		margin: 0;
+		width: 100%;
+	}
+	button {
+		margin: 0;
+		width: 100%;
+	}
 	</style>
 </head>
 
 <body>
 <canvas id="cnvs"></canvas>
+<div id="varsContainer">
+<p id="cellsVal">hills: 2</p>
+<input min="0" value="2" max="10" type="range" oninput="document.getElementById('cellsVal').innerText='hills: '+this.value;cells=parseInt(this.value); restart();"></input>
+<p id="widthVal">width: 20</p>
+<input min="1" value="20" max="100" type="range" oninput="document.getElementById('widthVal').innerText='width: '+this.value;grid.width=parseInt(this.value); restart();"></input>
+<p id="lengthVal">length: 20</p>
+<input min="1" value="20" max="100" type="range" oninput="document.getElementById('lengthVal').innerText='length: '+this.value;grid.length=parseInt(this.value); restart();"></input>
+<p id="heightVal">hill height: 4</p>
+<input min="1" value="4" max="25" type="range" oninput="document.getElementById('heightVal').innerText='hill height: '+this.value;hillHeight=parseInt(this.value); restart();"></input>
+</div>
+
 
 <script>
 var cnvs = document.getElementById("cnvs")
@@ -31,12 +61,11 @@ window.addEventListener("resize", ()=>{fitCanvas();restart();})
 var randCol = () => "hsl(" + (1+Math.random()*359) + ",50%,60%)"
 
 var interval = 0
-var gridSize = 20
+var grid = {width: 32, length: 16, squareSize: 1}
 var cells = 2
-var gridWidth = 1
-var hillHeight = 5
-var wireframe = false
-var cam = {x: (gridSize/2) * gridWidth, y: -12, z: hillHeight * 1.5, yaw: 0, pitch: 0, roll: 0, fov: 80, step: 0.5, lookStep: 10}
+var hillHeight = 4
+var wireframe = true
+var cam = {x: (grid.width/2) * grid.squareSize, y: -grid.length, z: hillHeight * 1.5, yaw: 0, pitch: 0, roll: 0, fov: 80, step: 0.5, lookStep: 10}
 
 function restart(){
 
@@ -46,29 +75,31 @@ function restart(){
 perlin.seed()
 world = []
 heights = []
-flying = gridSize - 1
-for (var r = 0; r < gridSize + 1; r++){
+flying = grid.length - 1
+for (var r = 0; r < grid.length + 1; r++){
 	var row = []
-	for (var c = 0; c < gridSize + 1; c++){
-		row.push(perlin.get(c * (cells/gridSize), r * (cells/gridSize)) * hillHeight)
+	for (var c = 0; c < grid.width + 1; c++){
+		row.push(perlin.get(c * (cells/Math.min(grid.width, grid.length)), r * (cells/Math.min(grid.width, grid.length))) * hillHeight)
 	}
 	heights.push(row)
 }
 
-for (var r = 0; r < gridSize; r++){
-	for (var c = 0; c < gridSize; c++){
-		var col = randCol()
+for (var r = 0; r < grid.length; r++){
+	for (var c = 0; c < grid.width; c++){
+		//var col = randCol()
+		var v = parseInt((heights[r][c] / hillHeight) * 360 + 180)
+		var col = 'hsl(' + v + ', 50%, 50%)'
 		world.push(
-			{verts: [{x: r * gridWidth, y: c * gridWidth, z: heights[c][r]},
-			{x: r * gridWidth + gridWidth, y: c * gridWidth, z: heights[c][r+1]}, 
-			{x: r * gridWidth, y: c * gridWidth + gridWidth, z: heights[c+1][r]}],
-			col: col},
+			{verts: [{x: c * grid.squareSize, y: r * grid.squareSize, z: heights[r][c]},
+					 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]}, 
+					 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
+					  col: col},
 			
-			{verts: [{x: r * gridWidth + gridWidth, y: c * gridWidth, z: heights[c][r+1]}, 
-			{x: r * gridWidth + gridWidth, y: c * gridWidth + gridWidth, z:heights[c+1][r+1]}, 
-			{x: r * gridWidth, y: c * gridWidth + gridWidth, z: heights[c+1][r]}],
-			col: col}
-	  )
+			{verts: [{x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]},
+					 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize + grid.squareSize, z:heights[r+1][c+1]}, 
+					 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
+					  col: col}
+		)
 	}
 }
 
@@ -76,6 +107,7 @@ update()
 }
 
 restart()
+toggleScroll()
 
 function update(){
 	render(world, cam, cnvs, wireframe)
@@ -114,17 +146,30 @@ function toggleScroll(){
 		flying += 1
 		heights.shift(1)
 		heights.push([])
-		for (var c = 0; c < gridSize + 1; c++){
-			heights[heights.length-1].push(perlin.get(c * (cells/gridSize), flying * (cells/gridSize)) * hillHeight)
+		for (var c = 0; c < grid.width + 1; c++){
+			heights[heights.length-1].push(perlin.get(c * (cells/Math.min(grid.width, grid.length)), flying * (cells/Math.min(grid.width, grid.length))) * hillHeight)
 		}
 		world = []
-		for (var r = 0; r < gridSize; r++){
-			for (var c = 0; c < gridSize; c++){
-				world.push({verts: [{x: r * gridWidth, y: c * gridWidth, z: heights[c][r]}, {x: r * gridWidth +gridWidth, y: c * gridWidth, z: heights[c][r+1]}, {x: r * gridWidth + gridWidth, y: c * gridWidth +gridWidth, z:heights[c+1][r+1]}, {x: r * gridWidth, y: c * gridWidth + gridWidth, z: heights[c+1][r]}], col: "#55ddcc"})
+		for (var r = 0; r < grid.length; r++){
+			for (var c = 0; c < grid.width; c++){
+				//var col = randCol()
+				var v = parseInt((heights[r][c] / hillHeight) * 360 + 180)
+				var col = 'hsl(' + v + ', 50%, 50%)'
+				world.push(
+					{verts: [{x: c * grid.squareSize, y: r * grid.squareSize, z: heights[r][c]},
+							 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]}, 
+							 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
+							  col: col},
+					
+					{verts: [{x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]},
+							 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize + grid.squareSize, z:heights[r+1][c+1]}, 
+							 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
+							  col: col}
+				)
 			}
 		}
 		update()
-		}, 150)
+		}, 50)
 	}
 }
 
