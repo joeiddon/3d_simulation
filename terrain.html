@@ -53,7 +53,9 @@
 <p id="lengthVal">length: 20</p>
 <input min="1" value="20" max="100" type="range" oninput="document.getElementById('lengthVal').innerText='length: '+this.value;grid.length=parseInt(this.value); restart();"></input>
 <p id="heightVal">hill height: 4</p>
-<input min="1" value="4" max="25" type="range" oninput="document.getElementById('heightVal').innerText='hill height: '+this.value;hillHeight=parseInt(this.value); restart();"></input>
+<input min="0" value="4" max="20" type="range" oninput="document.getElementById('heightVal').innerText='hill height: '+this.value;hillHeight=parseInt(this.value); restart();"></input>
+<p id="speedVal">speed: 100</p>
+<input min="1" value="100" max="500" type="range" oninput="document.getElementById('speedVal').innerText='speed: '+this.value;scrollSpeed=parseInt(this.value); restart();"></input>
 <pre>
 controls:
 wasd  |    movement
@@ -61,7 +63,7 @@ zx    | fly up/down
 eq    |         yaw
 rf    |       pitch
 yt    |        roll
-g	  |   wireframe
+g     |   wireframe
 b     |      scroll
 </pre>
 </div>
@@ -76,14 +78,15 @@ function fitCanvas(){
 	cnvs.height = innerHeight
 }
 fitCanvas()
-	
+
 window.addEventListener("resize", ()=>{fitCanvas();restart();})
 var randCol = () => "hsl(" + (1+Math.random()*359) + ",50%,60%)"
 
-var interval = 0
 var grid = {width: 32, length: 16, squareSize: 1}
 var cells = 2
 var hillHeight = 4
+var scrollSpeed = 100
+var scrolling = false	//toggled imediately below
 var wireframe = true
 var cam = {x: (grid.width/2) * grid.squareSize, y: -grid.length, z: hillHeight * 1.5, yaw: 0, pitch: 0, roll: 0, fov: 80, step: 0.5, lookStep: 10}
 
@@ -135,22 +138,57 @@ function update(){
 	drawCross(cnvs.width/2, cnvs.height/2, 20)
 }
 
+function toggleScroll(){
+	scrolling = !scrolling
+	if (scrolling) scroll()
+}
+
+function scroll(){
+	flying += 1
+	heights.shift(1)
+	heights.push([])
+	for (var c = 0; c < grid.width + 1; c++){
+		heights[heights.length-1].push(perlin.get(c * (cells/Math.min(grid.width, grid.length)), flying * (cells/Math.min(grid.width, grid.length))) * hillHeight)
+	}
+	world = []
+	for (var r = 0; r < grid.length; r++){
+		for (var c = 0; c < grid.width; c++){
+			//var col = randCol()
+			var v = parseInt((heights[r][c] / hillHeight) * 360 + 180)
+			var col = 'hsl(' + v + ', 50%, 50%)'
+			world.push(
+				{verts: [{x: c * grid.squareSize, y: r * grid.squareSize, z: heights[r][c]},
+						 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]}, 
+						 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
+						  col: col},
+				
+				{verts: [{x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]},
+						 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize + grid.squareSize, z:heights[r+1][c+1]}, 
+						 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
+						  col: col}
+			)
+		}
+	}
+	update()
+	if (scrolling) setTimeout(scroll, scrollSpeed)
+}
+
 window.addEventListener("keydown", function (event){
 	var key = event.keyCode
 
-	if (key == 67) restart()								//c for restart	
+	if (key == 67) restart()								//c for restart
 	if (key == 88) cam.z -= cam.step						//x	fly down
 	if (key == 90) cam.z += cam.step						//z fly up
 	if (key == 87) takeStep(cam.yaw)						//w	walk forward
 	if (key == 83) takeStep(cam.yaw + 180)					//s walk backwards
 	if (key == 65) takeStep(cam.yaw - 90)					//a walk left
-	if (key == 68) takeStep(cam.yaw + 90)					//d walk right	
+	if (key == 68) takeStep(cam.yaw + 90)					//d walk right
 	if (key == 69) cam.yaw   = (cam.yaw+cam.lookStep)%360	//e look left
-	if (key == 81) cam.yaw   = (cam.yaw-cam.lookStep)%360  	//q	look right
-	if (key == 82) cam.pitch = (cam.pitch+cam.lookStep)%360	//r	look up
-	if (key == 70) cam.pitch = (cam.pitch-cam.lookStep)%360 //f	look down
+	if (key == 81) cam.yaw   = (cam.yaw-cam.lookStep)%360	//q look right
+	if (key == 82) cam.pitch = (cam.pitch+cam.lookStep)%360	//r look up
+	if (key == 70) cam.pitch = (cam.pitch-cam.lookStep)%360	//f look down
 	if (key == 89) cam.roll  = (cam.roll+cam.lookStep)%360	//y roll left
-	if (key == 84) cam.roll  = (cam.roll-cam.lookStep)%360  //t roll right
+	if (key == 84) cam.roll  = (cam.roll-cam.lookStep)%360	//t roll right
 	if (key == 66) toggleScroll()							//b toggle auto scroll
 	if (key == 71) wireframe = !wireframe					//g toggle wireframe
 	//if (key == 187) //+
@@ -158,41 +196,6 @@ window.addEventListener("keydown", function (event){
 	update()
 })
 
-function toggleScroll(){
-	if (interval){
-		clearInterval(interval)
-		interval = 0
-	} else {
-		interval = setInterval(function(){
-		flying += 1
-		heights.shift(1)
-		heights.push([])
-		for (var c = 0; c < grid.width + 1; c++){
-			heights[heights.length-1].push(perlin.get(c * (cells/Math.min(grid.width, grid.length)), flying * (cells/Math.min(grid.width, grid.length))) * hillHeight)
-		}
-		world = []
-		for (var r = 0; r < grid.length; r++){
-			for (var c = 0; c < grid.width; c++){
-				//var col = randCol()
-				var v = parseInt((heights[r][c] / hillHeight) * 360 + 180)
-				var col = 'hsl(' + v + ', 50%, 50%)'
-				world.push(
-					{verts: [{x: c * grid.squareSize, y: r * grid.squareSize, z: heights[r][c]},
-							 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]}, 
-							 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
-							  col: col},
-					
-					{verts: [{x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]},
-							 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize + grid.squareSize, z:heights[r+1][c+1]}, 
-							 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
-							  col: col}
-				)
-			}
-		}
-		update()
-		}, 50)
-	}
-}
 
 
 function takeStep(yaw){
