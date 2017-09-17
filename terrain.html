@@ -48,14 +48,14 @@
 <div id="varsContainer">
 <p id="cellsVal">hills: 2</p>
 <input min="0" value="2" max="10" type="range" oninput="document.getElementById('cellsVal').innerText='hills: '+this.value;cells=parseInt(this.value); restart();"></input>
-<p id="widthVal">width: 20</p>
-<input min="1" value="20" max="100" type="range" oninput="document.getElementById('widthVal').innerText='width: '+this.value;grid.width=parseInt(this.value); restart();"></input>
-<p id="lengthVal">length: 20</p>
-<input min="1" value="20" max="100" type="range" oninput="document.getElementById('lengthVal').innerText='length: '+this.value;grid.length=parseInt(this.value); restart();"></input>
+<p id="widthVal">width: 32</p>
+<input min="1" value="32" max="100" type="range" oninput="document.getElementById('widthVal').innerText='width: '+this.value;grid.width=parseInt(this.value); restart();"></input>
+<p id="lengthVal">length: 16</p>
+<input min="1" value="16" max="100" type="range" oninput="document.getElementById('lengthVal').innerText='length: '+this.value;grid.length=parseInt(this.value); restart();"></input>
 <p id="heightVal">hill height: 4</p>
 <input min="0" value="4" max="20" type="range" oninput="document.getElementById('heightVal').innerText='hill height: '+this.value;hillHeight=parseInt(this.value); restart();"></input>
 <p id="speedVal">speed: 100</p>
-<input min="1" value="100" max="500" type="range" oninput="document.getElementById('speedVal').innerText='speed: '+this.value;scrollSpeed=parseInt(this.value); restart();"></input>
+<input min="1" value="100" max="200" type="range" oninput="document.getElementById('speedVal').innerText='speed: '+this.value;scrollSpeed=parseInt(this.value); restart();"></input>
 <pre>
 controls:
 wasd  |    movement
