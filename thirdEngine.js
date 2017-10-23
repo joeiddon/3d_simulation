@@ -1,3 +1,6 @@
+//cam = {x: ,y: ,z: , yaw: ,pitch: ,roll: ,fov: }
+//world = {{verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], c: }, {verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], c: }, ...}
+
 function render(world, cam, canvas, wireframe){
 	var ctx = canvas.getContext("2d")
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
