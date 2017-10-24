@@ -1,0 +1,50 @@
+<html>
+<head>
+<script src="https://rawgit.com/RoadKillCat/3dSimulationVR/master/thirdEngine.js"></script>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+    }
+    canvas {
+        background-color: black;
+    }
+</style>
+
+</head>
+
+<body>
+<canvas id="cnvs"></canvas>
+
+<script>
+cnvs = document.getElementById("cnvs");
+ctx = cnvs.getContext("2d");
+
+cnvs.width = innerWidth;
+cnvs.height = innerHeight;
+
+pnts = [{x: -0.5, y: -0.5, z: -0.5}, {x: 0.5, y: 0.5, z: -0.5}, {x: -0.5, y: 0.5, z: 0.5}, {x: 0.5, y: -0.5, z: 0.5}];
+
+world = [
+{verts: [pnts[0], pnts[1], pnts[2]], col: "red"},
+{verts: [pnts[1], pnts[2], pnts[3]], col: "green"},
+{verts: [pnts[0], pnts[1], pnts[3]], col: "blue"},
+{verts: [pnts[0], pnts[2], pnts[3]], col: "yellow"},
+];
+
+cam = {x: 0, y: -3, z: 1, yaw: 0, pitch: -10, roll: 0, fov: 70};
+
+
+angle = {x: 0, y: 0, z: 0};
+
+function update(){
+    angle.z++;
+    render(world.map(o=> ({verts: o.verts.map(yAxisRotate(toRad(angle.y))).map(zAxisRotate(toRad(angle.z))), col: o.col})), cam, cnvs, false);
+}
+
+setInterval(update, 10);
+
+</script>
+
+</body>
+</html>
