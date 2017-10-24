@@ -1,5 +1,5 @@
 //cam = {x: ,y: ,z: , yaw: ,pitch: ,roll: ,fov: }
-//world = {{verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], c: }, {verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], c: }, ...}
+//world = [{verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], col: }, {verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], col: }, ...]
 
 function render(world, cam, canvas, wireframe){
 	var ctx = canvas.getContext("2d")
@@ -54,9 +54,9 @@ function centroid(verts){
 var zDistance = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2))
 var distance = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2) + Math.pow(co2.z - co1.z , 2))
 var translate = (x,y,z) => (o => ({x: o.x + x, y: o.y + y, z: o.z + z}))
-var	xAxisRotate = (d) => (o => ({x: o.x,                                    y: o.y * Math.cos(d) + o.z * Math.sin(d),  z: -o.y * Math.sin(d) + o.z * Math.cos(d)}))
-var yAxisRotate = (d) => (o => ({x: o.x * Math.cos(d) + o.z * Math.sin(d),  y: o.y,                                    z: -o.x * Math.sin(d) + o.z * Math.cos(d)}))
-var	zAxisRotate = (d) => (o => ({x: o.x * Math.cos(d) - o.y * Math.sin(d),  y: o.x * Math.sin(d) + o.y * Math.cos(d),  z:  o.z})                                  )
+var xAxisRotate = (r) => (o => ({x: o.x,                                    y: o.y * Math.cos(r) + o.z * Math.sin(r),  z: -o.y * Math.sin(r) + o.z * Math.cos(r)}))
+var yAxisRotate = (r) => (o => ({x: o.x * Math.cos(r) + o.z * Math.sin(r),  y: o.y,                                    z: -o.x * Math.sin(r) + o.z * Math.cos(r)}))
+var zAxisRotate = (r) => (o => ({x: o.x * Math.cos(r) - o.y * Math.sin(r),  y: o.x * Math.sin(r) + o.y * Math.cos(r),  z:  o.z})                                  )
 var toDeg = (r) => r * (180 / Math.PI)
 var toRad = (d) => d * (Math.PI / 180)
 var copyFace = f => ({})
