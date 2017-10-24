@@ -1,5 +1,5 @@
 //cam = {x: ,y: ,z: , yaw: ,pitch: ,roll: ,fov: }
-//world = [{verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], c: }, {verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], c: }, ...]
+//world = [{verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], col: }, {verts: [{x: ,y: ,z: }, {x: ,y: ,z: }, ...], col: }, ...]
 
 function render(world, cam, canvas, wireframe){
 	var ctx = canvas.getContext("2d")
