@@ -28,7 +28,7 @@ function render(world, cam, canvas, wireframe){
 
 function drawFace(coords, col, ctx, wireframe){
 	ctx.beginPath(coords[0].x, coords[0].y)
-	for (var c = 0; c < coords.length; v++){
+	for (var c = 0; c < coords.length; c++){
 		ctx.lineTo(coords[c].x, coords[c].y)
 	}
 	ctx.closePath()
