@@ -6,7 +6,7 @@ function render(world, cam, canvas, wireframe){
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 	
 	//order the faces in the world **furthest to closest**
-	if (!wireframe) world.sort((a,b) => (zDistance(centroid(b.verts), cam) - zDistance(centroid(a.verts), cam)))
+	if (!wireframe) world.sort((a,b) => (distance(centroid(b.verts), cam) - distance(centroid(a.verts), cam)))
 	
 	for (var f = 0; f < world.length; f++){
 		
@@ -50,8 +50,6 @@ function centroid(verts){
 	return {x: centr.x/verts.length, y: centr.y/verts.length, z: centr.z/verts.length}
 }
 
-//var angleToCoord = (cam, coord) => ({yaw: toDeg(Math.atan2(coord.x - cam.x, coord.y - cam.y)), pitch: toDeg(Math.atan2(coord.z - cam.z, coord.y - cam.y))})
-var zDistance = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2))
 var distance = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2) + Math.pow(co2.z - co1.z , 2))
 var translate = (x,y,z) => (o => ({x: o.x + x, y: o.y + y, z: o.z + z}))
 var xAxisRotate = (r) => (o => ({x: o.x,                                    y: o.y * Math.cos(r) + o.z * Math.sin(r),  z: -o.y * Math.sin(r) + o.z * Math.cos(r)}))
@@ -59,4 +57,3 @@ var yAxisRotate = (r) => (o => ({x: o.x * Math.cos(r) + o.z * Math.sin(r),  y: o
 var zAxisRotate = (r) => (o => ({x: o.x * Math.cos(r) - o.y * Math.sin(r),  y: o.x * Math.sin(r) + o.y * Math.cos(r),  z:  o.z})                                  )
 var toDeg = (r) => r * (180 / Math.PI)
 var toRad = (d) => d * (Math.PI / 180)
-var copyFace = f => ({})
