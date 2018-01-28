@@ -19,7 +19,7 @@ function render(world, cam, canvas, wireframe){
 		//convert angles to canvas coordinates
 		var canvasCoords = canvasAngles.map(a => ({x: canvas.width/2 + (a.yaw * (canvas.width/cam.fov)), y: canvas.height/2 - (a.pitch * (canvas.width/cam.fov))}))
 
-        if (!canvasCoords.every(c => onScreen(c, cnvs.width, cnvs.height))) continue
+        if (!canvasCoords.some(c => onScreen(c, cnvs.width, cnvs.height))) continue
 
 		//draw the face on the canvas
 		drawFace(canvasCoords, world[f].col, ctx, wireframe)
