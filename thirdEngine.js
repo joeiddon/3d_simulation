@@ -11,23 +11,25 @@ function render(world, cam, canvas, wireframe){
 	for (var f = 0; f < world.length; f++){
 		
 		//align coordinates to camera view angle	
-		var canvasVerts = world[f].verts.map(translate(-cam.x, -cam.y, -cam.z)).map(zAxisRotate(toRad(cam.yaw))).map(yAxisRotate(toRad(cam.roll))).map(xAxisRotate(toRad(cam.pitch))).map(translate(cam.x,cam.y,cam.z))		
-		
-		//convert the coordinates to yaw pitch angles from cam center
-		canvasVerts = canvasVerts.map(c => ({yaw: toDeg(Math.atan2(c.x - cam.x, c.y - cam.y)), pitch: toDeg(Math.atan2(c.z - cam.z, c.y - cam.y))}) )
+		var alignedCoords = world[f].verts.map(translate(-cam.x, -cam.y, -cam.z)).map(zAxisRotate(toRad(cam.yaw))).map(yAxisRotate(toRad(cam.roll))).map(xAxisRotate(toRad(cam.pitch))).map(translate(cam.x,cam.y,cam.z))
+
+		//convert the coordinates to yaw pitch angles from cam center line
+		var canvasAngles = alignedCoords.map(c => ({yaw: toDeg(Math.atan2(c.x - cam.x, c.y - cam.y)), pitch: toDeg(Math.atan2(c.z - cam.z, c.y - cam.y))}) )
 		
 		//convert angles to canvas coordinates
-		canvasVerts = canvasVerts.map(a => ({x: canvas.width/2 + (a.yaw * (canvas.width/cam.fov)), y: canvas.height/2 - (a.pitch * (canvas.width/cam.fov))}) )
-		
+		var canvasCoords = canvasAngles.map(a => ({x: canvas.width/2 + (a.yaw * (canvas.width/cam.fov)), y: canvas.height/2 - (a.pitch * (canvas.width/cam.fov))}))
+
+        if (!canvasCoords.every(c => onScreen(c, cnvs.width, cnvs.height))) continue
+
 		//draw the face on the canvas
-		drawFace(canvasVerts, world[f].col, ctx, wireframe)
+		drawFace(canvasCoords, world[f].col, ctx, wireframe)
 	}
 }
 
-function drawFace(verts, col, ctx, wireframe){
-	ctx.beginPath(verts[0].x, verts[0].y)
-	for (var v = 0; v < verts.length; v++){
-		ctx.lineTo(verts[v].x, verts[v].y)
+function drawFace(coords, col, ctx, wireframe){
+	ctx.beginPath(coords[0].x, coords[0].y)
+	for (var c = 0; c < coords.length; v++){
+		ctx.lineTo(coords[c].x, coords[c].y)
 	}
 	ctx.closePath()
 	ctx.strokeStyle = wireframe ? "white" : "black"
@@ -50,6 +52,7 @@ function centroid(verts){
 	return {x: centr.x/verts.length, y: centr.y/verts.length, z: centr.z/verts.length}
 }
 
+var onScreen = (c, w, h) => c.x > 0 && c.y > 0 && c.x < w && c.y < h
 var distance = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2) + Math.pow(co2.z - co1.z , 2))
 var translate = (x,y,z) => (o => ({x: o.x + x, y: o.y + y, z: o.z + z}))
 var xAxisRotate = (r) => (o => ({x: o.x,                                    y: o.y * Math.cos(r) + o.z * Math.sin(r),  z: -o.y * Math.sin(r) + o.z * Math.cos(r)}))
