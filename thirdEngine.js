@@ -6,7 +6,7 @@ function render(world, cam, canvas, wireframe){
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 	
 	//order the faces in the world **furthest to closest**
-	if (!wireframe) world.sort((a,b) => (zDistance(centroid(a.verts), cam) < zDistance(centroid(b.verts), cam)))
+	if (!wireframe) world.sort((a,b) => (zDistance(centroid(b.verts), cam) - zDistance(centroid(a.verts), cam)))
 	
 	for (var f = 0; f < world.length; f++){
 		
