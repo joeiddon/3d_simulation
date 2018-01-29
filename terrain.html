@@ -64,6 +64,7 @@ eq    |         yaw
 rf    |       pitch
 yt    |        roll
 g     |   wireframe
+c     |     restart
 b     |      scroll
 </pre>
 </div>
@@ -86,47 +87,45 @@ var grid = {width: 32, length: 16, squareSize: 1}
 var cells = 2
 var hillHeight = 4
 var scrollSpeed = 100
-var scrolling = false	//toggled imediately below
+var scrolling = false	//toggled immediately below
 var wireframe = false
 var cam = {x: (grid.width/2) * grid.squareSize, y: -grid.length, z: hillHeight * 1.5, yaw: 0, pitch: 0, roll: 0, fov: 80, step: 0.5, lookStep: 10}
 
+function genWorld(){ //adds triangle faces to world array of coordinates from heights array
+    world = []
+    for (var r = 0; r < grid.length; r++){
+        for (var c = 0; c < grid.width; c++){
+            //var col = randCol()
+            var v = parseInt((heights[r][c] / hillHeight) * 360 + 180)
+            var col = 'hsl(' + v + ', 50%, 60%)'
+            world.push(
+                {verts: [{x: c * grid.squareSize, y: r * grid.squareSize, z: heights[r][c]},
+                         {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]}, 
+                         {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
+                          col: col},
+                
+                {verts: [{x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]},
+                         {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize + grid.squareSize, z:heights[r+1][c+1]}, 
+                         {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
+                          col: col}
+            )
+        }
+    }
+}
+
 function restart(){
-
-//var world = [
-//	{verts: [{x: -5,y: 10,z: 0}, {x: 5,y: 10,z: 0}, {x: 0,y: 10,z: 10}], col: "blue"}
-//]
-perlin.seed()
-world = []
-heights = []
-flying = grid.length - 1
-for (var r = 0; r < grid.length + 1; r++){
-	var row = []
-	for (var c = 0; c < grid.width + 1; c++){
-		row.push(perlin.get(c * (cells/Math.min(grid.width, grid.length)), r * (cells/Math.min(grid.width, grid.length))) * hillHeight)
-	}
-	heights.push(row)
-}
-
-for (var r = 0; r < grid.length; r++){
-	for (var c = 0; c < grid.width; c++){
-		//var col = randCol()
-		var v = parseInt((heights[r][c] / hillHeight) * 360 + 180)
-		var col = 'hsl(' + v + ', 50%, 50%)'
-		world.push(
-			{verts: [{x: c * grid.squareSize, y: r * grid.squareSize, z: heights[r][c]},
-					 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]}, 
-					 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
-					  col: col},
-			
-			{verts: [{x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]},
-					 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize + grid.squareSize, z:heights[r+1][c+1]}, 
-					 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
-					  col: col}
-		)
-	}
-}
-
-update()
+    perlin.seed()
+    heights = []
+    flying = grid.length - 1 //this is the end position of the gris so when scrolling we can get smooth perlin
+    for (var r = 0; r < grid.length + 1; r++){
+        var row = []
+        for (var c = 0; c < grid.width + 1; c++){
+            row.push(perlin.get(c * (cells/Math.min(grid.width, grid.length)), r * (cells/Math.min(grid.width, grid.length))) * hillHeight)
+        }
+        heights.push(row)
+    }
+    genWorld()
+    update()
 }
 
 restart()
@@ -150,25 +149,7 @@ function scroll(){
 	for (var c = 0; c < grid.width + 1; c++){
 		heights[heights.length-1].push(perlin.get(c * (cells/Math.min(grid.width, grid.length)), flying * (cells/Math.min(grid.width, grid.length))) * hillHeight)
 	}
-	world = []
-	for (var r = 0; r < grid.length; r++){
-		for (var c = 0; c < grid.width; c++){
-			//var col = randCol()
-			var v = parseInt((heights[r][c] / hillHeight) * 360 + 180)
-			var col = 'hsl(' + v + ', 50%, 50%)'
-			world.push(
-				{verts: [{x: c * grid.squareSize, y: r * grid.squareSize, z: heights[r][c]},
-						 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]}, 
-						 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
-						  col: col},
-				
-				{verts: [{x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize, z: heights[r][c+1]},
-						 {x: c * grid.squareSize + grid.squareSize, y: r * grid.squareSize + grid.squareSize, z:heights[r+1][c+1]}, 
-						 {x: c * grid.squareSize, y: r * grid.squareSize + grid.squareSize, z: heights[r+1][c]}],
-						  col: col}
-			)
-		}
-	}
+    genWorld()
 	update()
 	if (scrolling) setTimeout(scroll, scrollSpeed)
 }
