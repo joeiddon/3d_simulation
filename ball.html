@@ -1,0 +1,56 @@
+<html>
+<head>
+<script src="thirdEngine.js"></script>
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+#cnvs {
+    background-color: black;
+}
+</style>
+</head>
+<body>
+<canvas id="cnvs"></canvas>
+<script>
+"use strict";
+
+var cnvs = document.getElementById("cnvs");
+var ctx = cnvs.getContext("2d");
+
+function fitToScreen(){
+    cnvs.width = innerWidth;
+    cnvs.height = innerHeight;
+}
+fitToScreen();
+window.addEventListener("resize", fitToScreen);
+
+function circleCoord(t1, t2){
+    return {x: Math.sin(t1) * Math.cos(t2), y: Math.cos(t1) * Math.cos(t2), z: Math.sin(t2)};
+}
+
+var block = [];
+var interval = Math.PI / 16;
+
+var rb = () => parseInt(Math.random()*255).toString();
+
+for (var i = 0; i < Math.PI * 2; i += interval){
+    for (var j = -Math.PI/2; j < Math.PI/2; j += interval){
+        //var c = "rgb(" + rb() + "," + rb() + "," + rb() + ")";
+        var c = "hsl("+(j*255/Math.PI).toString()+", 50%, 50%)";
+        block.push({verts: [circleCoord(i, j), circleCoord(i, j + interval), circleCoord(i + interval, j + interval), circleCoord(i + interval, j)], col: c});
+    }
+}
+
+var cam = {x:0, y:-3, z: 0, yaw: 0, pitch: 0, roll: 0, fov: 60};
+
+var s = new Date();
+setInterval(function(){
+    block = block.map(o=>({verts: o.verts.map(zAxisRotate(Math.PI / 256)).map(xAxisRotate(Math.PI / 256)), col: o.col}));
+    render(block, cam, cnvs, new Date() - s < 8000);
+}, 50);
+
+</script>
+</body>
