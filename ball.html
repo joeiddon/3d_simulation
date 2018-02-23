@@ -57,7 +57,7 @@ var vx = 0;
 var vy = 0;
 
 //dapening for mapping pixel deltas to vels
-var dapening = 600;
+var dapening = 400;
 
 //controle pannel attrs.
 var cp = {x: 90, y: 120, r: 80};
@@ -114,8 +114,9 @@ function mu(){
 }
 
 function mmcp(e){   
-    if (dist({x: e.offsetX, y: e.offsetY}, cp) < cp.r) set_vel(e);
-
+    //uncomment if-statement to limit control panel to within circle
+    //if (dist({x: e.offsetX, y: e.offsetY}, cp) < cp.r)
+    set_vel(e);
 }
 
 function mmdr(e){
@@ -134,8 +135,10 @@ function dist(p1, p2){
 function draw_cp(){
     ctx.font = "10px monospace";
     ctx.fillStyle = "#fff";
-    ctx.fillText("use the circle", 10, 19);
-    ctx.fillText("to set a velocity", 10, 29);
+    ctx.fillText("use the circle to set", 10, 19);
+    ctx.fillText("a velocity", 10, 29);
+    ctx.fillText("or drag the sphere with", 10, cp.y + cp.r +  20);
+    ctx.fillText("your mouse", 10, cp.y + cp.r + 35);
     drawCircle(cp.x, cp.y, cp.r);
 }
 
