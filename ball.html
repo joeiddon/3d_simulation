@@ -31,26 +31,67 @@ function circleCoord(t1, t2){
     return {x: Math.sin(t1) * Math.cos(t2), y: Math.cos(t1) * Math.cos(t2), z: Math.sin(t2)};
 }
 
-var block = [];
-var interval = Math.PI / 16;
+var ball = [];
+var segs = Math.PI / 16;
 
-var rb = () => parseInt(Math.random()*255).toString();
-
-for (var i = 0; i < Math.PI * 2; i += interval){
-    for (var j = -Math.PI/2; j < Math.PI/2; j += interval){
-        //var c = "rgb(" + rb() + "," + rb() + "," + rb() + ")";
-        var c = "hsl("+(j*255/Math.PI).toString()+", 50%, 50%)";
-        block.push({verts: [circleCoord(i, j), circleCoord(i, j + interval), circleCoord(i + interval, j + interval), circleCoord(i + interval, j)], col: c});
+for (var i = 0; i < Math.PI * 2; i += segs){
+    for (var j = -Math.PI/2; j < Math.PI/2; j += segs){
+        ball.push({verts: [circleCoord(i, j), circleCoord(i, j + segs), circleCoord(i + segs, j + segs), circleCoord(i + segs, j)], col: '#fff'});
     }
 }
 
 var cam = {x:0, y:-5, z: 0, yaw: 0, pitch: 0, roll: 0, fov: 60};
+var vx = 0;
+var vy = 0;
+var dapening = 600;
+var cp = {x: 90, y: 120, r: 80};
 
-var s = new Date();
-setInterval(function(){
-    block = block.map(o=>({verts: o.verts.map(zAxisRotate(Math.PI / 256)).map(xAxisRotate(Math.PI / 256)), col: o.col}));
-    render(block, cam, cnvs, new Date() - s < 8000);
+ctx.font = "10px monospace";
+ctx.fillStyle = "#fff";
+
+setInterval(function(){i
+    ball = ball.map(o=>({verts: o.verts.map(zAxisRotate(vx)).map(xAxisRotate(vy)), col: o.col}));
+    render(ball, cam, cnvs, true);
+    ctx.fillText("use the circle", 10, 19);
+    ctx.fillText("to set a velocity", 10, 29);
+    drawCircle(cp.x, cp.y, cp.r);
 }, 50);
 
+document.addEventListener("mousedown", md);
+
+function set_vel(e){
+    vx = (e.offsetX - cp.x) / dapening;
+    vy = (cp.y - e.offsetY) / dapening;
+}
+
+function md(e){
+    if (dist({x: e.offsetX, y: e.offsetY}, cp) < cp.r){
+        set_vel(e);
+        document.addEventListener("mouseup",   mu);
+        document.addEventListener("mousemove", mm);
+        document.removeEventListener("mousedown", md);
+    }
+}
+
+function mu(){
+    document.removeEventListener("mousemove", mm);
+    document.addEventListener("mousedown", md);
+    document.removeEventListener("mouseup", mu);
+}
+
+function mm(e){
+    if (dist({x: e.offsetX, y: e.offsetY}, cp) < cp.r) set_vel(e);
+}
+
+function dist(p1, p2){
+    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+}
+
+function drawCircle(x, y, r){
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+}
 </script>
 </body>
