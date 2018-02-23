@@ -1,7 +1,6 @@
 import os 
-
-with open("README.md", "w") as fHandle:
-    fHandle.write("# Links to the pages\n")
-    for f in os.listdir():
+with open("README.md", "w") as fh:
+    fh.write("# Links to different versions and some testing applications\n")
+    for f in sorted(os.listdir()):
         if ".html" in f:
-            fHandle.write("- [{}](https://roadkillcat.github.io/3dSimulationVR/{})\n".format(f, f))
+            fh.write("- [{}](https://roadkillcat.github.io/3dSimulationVR/{})\n".format(f, f))
