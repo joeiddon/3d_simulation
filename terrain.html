@@ -1,45 +1,45 @@
 <html>
 <head>
-	<script src="thirdEngine.js"></script>
-	<script src="http://joeiddon.me/PerlinNoise/perlin.js"></script>
-	<style>
-	body {
-		margin: 0;
-		padding: 0;
-	}
-	#cnvs {
-		background-color: black; 
-		position: fixed;
-		float: top;
-		z-index: -1;
-		<!-- #FCFCDA; -->
-	}	
-	#varsContainer{
-		padding: 10px;
-		width: 200px;
-	}
-	p {
-		text-align: center;
-	}
-	p, pre {
-		font-family: monospace;
-		margin: 0;
-		color: white;
-	}
-	#cam {
-		bottom: 0;
-		position: fixed;
-		text-align: left;
-	}
-	input {
-		margin: 0;
-		width: 100%;
-	}
-	button {
-		margin: 0;
-		width: 100%;
-	}
-	</style>
+    <script src="thirdEngine.js"></script>
+    <script src="http://joeiddon.me/perlin/perlin.js"></script>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    #cnvs {
+        background-color: black; 
+        position: fixed;
+        float: top;
+        z-index: -1;
+        <!-- #FCFCDA; -->
+    }   
+    #varsContainer{
+        padding: 10px;
+        width: 200px;
+    }
+    p {
+        text-align: center;
+    }
+    p, pre {
+        font-family: monospace;
+        margin: 0;
+        color: white;
+    }
+    #cam {
+        bottom: 0;
+        position: fixed;
+        text-align: left;
+    }
+    input {
+        margin: 0;
+        width: 100%;
+    }
+    button {
+        margin: 0;
+        width: 100%;
+    }
+    </style>
 </head>
 
 <body>
@@ -75,8 +75,8 @@ var cnvs = document.getElementById("cnvs")
 var ctx = cnvs.getContext("2d")
 
 function fitCanvas(){
-	cnvs.width = innerWidth
-	cnvs.height = innerHeight
+    cnvs.width = innerWidth
+    cnvs.height = innerHeight
 }
 fitCanvas()
 
@@ -87,7 +87,7 @@ var grid = {width: 32, length: 16, squareSize: 1}
 var cells = 2
 var hillHeight = 4
 var scrollSpeed = 100
-var scrolling = false	//toggled immediately below
+var scrolling = false   //toggled immediately below
 var wireframe = false
 var cam = {x: (grid.width/2) * grid.squareSize, y: -grid.length, z: hillHeight * 1.5, yaw: 0, pitch: 0, roll: 0, fov: 80, step: 0.5, lookStep: 10}
 
@@ -132,59 +132,59 @@ restart()
 toggleScroll()
 
 function update(){
-	document.getElementById("cam").innerText = "x: "+cam.x+" y: "+cam.y+" z: "+cam.z+" yaw: "+cam.yaw+" pitch: "+cam.pitch+" roll: "+cam.roll
-	render(world, cam, cnvs, wireframe)
-	drawCross(cnvs.width/2, cnvs.height/2, 20)
+    document.getElementById("cam").innerText = "x: "+cam.x+" y: "+cam.y+" z: "+cam.z+" yaw: "+cam.yaw+" pitch: "+cam.pitch+" roll: "+cam.roll
+    render(world, cam, cnvs, wireframe)
+    drawCross(cnvs.width/2, cnvs.height/2, 20)
 }
 
 function toggleScroll(){
-	scrolling = !scrolling
-	if (scrolling) scroll()
+    scrolling = !scrolling
+    if (scrolling) scroll()
 }
 
 function scroll(){
-	flying += 1
-	heights.shift(1)
-	heights.push([])
-	for (var c = 0; c < grid.width + 1; c++){
-		heights[heights.length-1].push(perlin.get(c * (cells/Math.min(grid.width, grid.length)), flying * (cells/Math.min(grid.width, grid.length))) * hillHeight)
-	}
+    flying += 1
+    heights.shift(1)
+    heights.push([])
+    for (var c = 0; c < grid.width + 1; c++){
+        heights[heights.length-1].push(perlin.get(c * (cells/Math.min(grid.width, grid.length)), flying * (cells/Math.min(grid.width, grid.length))) * hillHeight)
+    }
     genWorld()
-	update()
-	if (scrolling) setTimeout(scroll, scrollSpeed)
+    update()
+    if (scrolling) setTimeout(scroll, scrollSpeed)
 }
 
 window.addEventListener("keydown", function (event){
-	var key = event.keyCode
+    var key = event.keyCode
 
-	if (key == 67) restart()								//c for restart
-	if (key == 88) cam.z -= cam.step						//x	fly down
-	if (key == 90) cam.z += cam.step						//z fly up
-	if (key == 87) takeStep(cam.yaw)						//w	walk forward
-	if (key == 83) takeStep(cam.yaw + 180)					//s walk backwards
-	if (key == 65) takeStep(cam.yaw - 90)					//a walk left
-	if (key == 68) takeStep(cam.yaw + 90)					//d walk right
-	if (key == 69) cam.yaw   = (cam.yaw+cam.lookStep)%360	//e look left
-	if (key == 81) cam.yaw   = (cam.yaw-cam.lookStep)%360	//q look right
-	if (key == 82) cam.pitch = (cam.pitch+cam.lookStep)%360	//r look up
-	if (key == 70) cam.pitch = (cam.pitch-cam.lookStep)%360	//f look down
-	if (key == 89) cam.roll  = (cam.roll+cam.lookStep)%360	//y roll left
-	if (key == 84) cam.roll  = (cam.roll-cam.lookStep)%360	//t roll right
-	if (key == 66) toggleScroll()							//b toggle auto scroll
-	if (key == 71) wireframe = !wireframe					//g toggle wireframe
-	//if (key == 187) //+
-	//if (key == 189) //-
-	update()
+    if (key == 67) restart()                                //c for restart
+    if (key == 88) cam.z -= cam.step                        //x fly down
+    if (key == 90) cam.z += cam.step                        //z fly up
+    if (key == 87) takeStep(cam.yaw)                        //w walk forward
+    if (key == 83) takeStep(cam.yaw + 180)                  //s walk backwards
+    if (key == 65) takeStep(cam.yaw - 90)                   //a walk left
+    if (key == 68) takeStep(cam.yaw + 90)                   //d walk right
+    if (key == 69) cam.yaw   = (cam.yaw+cam.lookStep)%360   //e look left
+    if (key == 81) cam.yaw   = (cam.yaw-cam.lookStep)%360   //q look right
+    if (key == 82) cam.pitch = (cam.pitch+cam.lookStep)%360 //r look up
+    if (key == 70) cam.pitch = (cam.pitch-cam.lookStep)%360 //f look down
+    if (key == 89) cam.roll  = (cam.roll+cam.lookStep)%360  //y roll left
+    if (key == 84) cam.roll  = (cam.roll-cam.lookStep)%360  //t roll right
+    if (key == 66) toggleScroll()                           //b toggle auto scroll
+    if (key == 71) wireframe = !wireframe                   //g toggle wireframe
+    //if (key == 187) //+
+    //if (key == 189) //-
+    update()
 })
 
 
 
 function takeStep(yaw){
-	cam.x = cam.step * Math.sin(toRad(yaw)) + cam.x
-	cam.y = cam.step * Math.cos(toRad(yaw)) + cam.y
+    cam.x = cam.step * Math.sin(toRad(yaw)) + cam.x
+    cam.y = cam.step * Math.cos(toRad(yaw)) + cam.y
 }
 
-function drawLine(xStart, yStart, xFin, yFin){					//draws a line on the canvas
+function drawLine(xStart, yStart, xFin, yFin){                  //draws a line on the canvas
    ctx.beginPath();
    ctx.moveTo(xStart, yStart);
    ctx.lineTo(xFin, yFin);
@@ -192,9 +192,9 @@ function drawLine(xStart, yStart, xFin, yFin){					//draws a line on the canvas
    ctx.stroke();
 }
 
-function drawCross(x, y, l){									//draws a cross on canvas in relation to the midpoint
-	drawLine(x + l, y, x - l, y)
-	drawLine(x, y + l, x, y - l)
+function drawCross(x, y, l){                                    //draws a cross on canvas in relation to the midpoint
+    drawLine(x + l, y, x - l, y)
+    drawLine(x, y + l, x, y - l)
 }
 
 
